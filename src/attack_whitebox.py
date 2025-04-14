@@ -8,7 +8,7 @@ import torch.nn.functional as F
 
 def ii_fo(img1, img2, facial_encode_model, steps=80, alpha=0.01, epsilon=0.01):
     # img1, img2: [0, 1]
-    
+    facial_encode_model.train()
     img1_embedding = facial_encode_model(img1)
     img2_embedding = facial_encode_model(img2)
     img1_ = img1.clone().detach()

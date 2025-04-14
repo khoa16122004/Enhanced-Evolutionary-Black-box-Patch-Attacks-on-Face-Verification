@@ -17,7 +17,7 @@ def main(args):
             img2.save("img2.jpg")
             qs = prompt + image_token * 2
             print("question: ", qs)
-            output = lvlm_model.inference([img1, img2], "prompt")
+            output = lvlm_model.inference(qs, [img1, img2])
             print("Output: ", output[0])
             print("Label: ", label)
 

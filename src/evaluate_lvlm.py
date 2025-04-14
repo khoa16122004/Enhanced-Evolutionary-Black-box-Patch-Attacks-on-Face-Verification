@@ -7,22 +7,22 @@ def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
     
-    # prompt ="Given the two facial images, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Facial images:"
-    prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer for details. Facial images:"
+    prompt ="Given the two facial images, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Facial images:"
+    # prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer for details. Facial images:"
     acc = 0
     
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, label = dataset[i]
-            img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
-            img1.save("img1.jpg")
-            img2.save("img2.jpg")
+            # img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
+            # img1.save("img1.jpg")
+            # img2.save("img2.jpg")
             qs = prompt + image_token * 2
             print("question: ", qs)
             output = lvlm_model.inference(qs, [img1, img2])
             print("Output: ", output[0])
             print("Label: ", label)
-            break
+            # break
             if output[0] == str(label):
                 acc += 1
                 

@@ -20,12 +20,13 @@ def main(args):
     num_1 = 0
     with torch.no_grad():
         for i in range(len(dataset)):
+
+                
+            img1, img2, label = dataset[i]
             if label == 0:
                 num_0 += 1
             else:
                 num_1 += 1
-                
-            img1, img2, label = dataset[i]
             img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
             
             qs = prompt + image_token * 2

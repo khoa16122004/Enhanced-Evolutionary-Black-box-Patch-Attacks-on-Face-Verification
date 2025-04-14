@@ -2,7 +2,7 @@ import argparse
 from dataset import get_dataset
 from get_architech import init_lvlm_model
 import torch
-
+from PIL import Image
 def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
@@ -14,15 +14,19 @@ def main(args):
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, label = dataset[i]
+            if args.test == 1:
+                img_test = input("Your path: ")
+                img1 = Image.open(img_test).convert("RGB")
+            
             # img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
-            # img1.save("img1.jpg")
-            # img2.save("img2.jpg")
+            img1.save("img1.jpg")
+            img2.save("img2.jpg")
             qs = prompt + image_token * 2
             print("question: ", qs)
             output = lvlm_model.inference(qs, [img1, img2])
             print("Output: ", output[0])
             print("Label: ", label)
-            # break
+            break
             if output[0] == str(label):
                 acc += 1
                 

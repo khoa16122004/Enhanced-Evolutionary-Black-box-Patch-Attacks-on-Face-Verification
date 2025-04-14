@@ -3,7 +3,7 @@ from dataset import get_dataset
 from get_architech import init_lvlm_model
 import torch
 
-def main():
+def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
     lvlm_model.eval()

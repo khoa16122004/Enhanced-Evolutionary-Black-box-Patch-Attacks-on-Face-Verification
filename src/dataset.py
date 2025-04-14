@@ -15,9 +15,9 @@ from torchvision.datasets.utils import download_and_extract_archive
 
 def get_dataset(dataset_name):
     if dataset_name == "lfw":
-        dataset = LFW(IMG_DIR="lfw_dataset\lfw_crop_margin_5",
+        dataset = LFW(IMG_DIR="../lfw_dataset/lfw_crop_margin_5",
                       MASK_DIR=None,
-                      PAIR_PATH="lfw_dataset\lfw_pairs.txt",
+                      PAIR_PATH="../lfw_dataset/lfw_pairs.txt",
                       transform=None)
         
     return dataset

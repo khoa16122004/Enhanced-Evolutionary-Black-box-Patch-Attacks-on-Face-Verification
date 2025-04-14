@@ -21,7 +21,7 @@ def main(args):
             output = lvlm_model.inference(qs, [img1, img2])
             print("Output: ", output[0])
             print("Label: ", label)
-            if output == label:
+            if output[0] == label:
                 acc += 1
                 
     print("Accuracy: ", acc / len(dataset))

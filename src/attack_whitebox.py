@@ -25,8 +25,8 @@ def ii_fo(img1, img2, facial_encode_model, steps=80, alpha=0.01, epsilon=0.01):
         gradient = delta.grad
         delta_data = torch.clamp(delta - alpha * torch.sign(gradient), -epsilon, epsilon)
         delta.data = delta_data
-        delta.grad.zero_()
-        print("Loss: ")
+        delta.grad = None
+        print("Loss: ", loss)
     
     img1_adv = img1_ + delta
     adv_embedding = facial_encode_model(image_adv)

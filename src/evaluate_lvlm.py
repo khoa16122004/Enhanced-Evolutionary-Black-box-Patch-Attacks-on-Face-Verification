@@ -22,6 +22,7 @@ def main(args):
             output = lvlm_model.inference(qs, [img1, img2])
             print("Output: ", output[0])
             print("Label: ", label)
+            break
             if output[0] == str(label):
                 acc += 1
                 

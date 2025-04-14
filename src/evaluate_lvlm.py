@@ -12,37 +12,28 @@ toTensor = transforms.ToTensor()
 def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
-    encode_model = get_face_encoder("restnet_vggface")
-    # prompt ="Given the two facial images, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Facial images:"
-    prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer for details. Facial images:"
-    acc = 0
-    
+    prompt ="Given the two facial images, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Facial images:"
+    # prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer for details. Facial images:"
+    acc_0 = 0
+    acc_1 = 0
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, label = dataset[i]
-            if args.test == 1:
-                img_test = input("Your path: ")
-                img1 = Image.open(img_test).convert("RGB")
+            img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
             
-            img1, img2 = img1.resize((160, 160)), img2.resize((160, 160))
-            img1_torch, img2_torch = toTensor(img1), toTensor(img2)
-            fea1, fea2 = encode_model(img1_torch.unsqueeze(0).cuda()), encode_model(img2_torch.unsqueeze(0).cuda())
-            sims = F.cosine_similarity(fea1, fea2, dim=1)
-            print("Sims: ", sims)
-            
-            img1.save("img1.jpg")
-            img2.save("img2.jpg")
             qs = prompt + image_token * 2
-            print("question: ", qs)
             output = lvlm_model.inference(qs, [img1, img2])
-            print("Output: ", output[0])
-            print("Label: ", label)
-            break
             if output[0] == str(label):
-                acc += 1
+                if label == 0:
+                    acc_0 += 1
+                else:
+                    acc_1 += 1
                 
-    print("Accuracy: ", acc / len(dataset))
 
+    output_path = f"{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+    with open(output_path, "w") as f:
+        f.write(f"acc_0: {acc_0 / len(dataset)}\n")
+        f.write(f"acc_1: {acc_1 / len(dataset)}\n")
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--pretrained", type=str, default="llava-onevision-qwen2-7b-ov")

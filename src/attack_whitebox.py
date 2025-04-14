@@ -38,7 +38,7 @@ def ii_fo(img1, img2, facial_encode_model, steps=80, alpha=0.01, epsilon=0.01):
 toTensor = transforms.ToTensor()
 def main(args):
     dataset = get_dataset(args.dataset)
-    face_encoder = get_face_encoder(args.model_name)
+    face_encoder = get_face_encoder("restnet_vggface")
     
     img1, img2, label = dataset[args.index]
     img1, img2 = img1.resize((160, 160)), img2.resize((160, 160))
@@ -46,5 +46,12 @@ def main(args):
     img1_adv = ii_fo(img1_tensor, img2_tensor, face_encoder) # torch tensor
     img_adv_pil = transforms.ToPILImage()(img1_adv)
     img_adv_pil.save("test_fo.png")
+    
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", type=str, default="lfw")
+    args = parser.parse_args()
+    
+    main(args)
     
     

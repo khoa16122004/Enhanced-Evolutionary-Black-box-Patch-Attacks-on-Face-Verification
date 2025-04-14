@@ -42,7 +42,7 @@ def main(args):
     
     img1, img2, label = dataset[args.index]
     img1, img2 = img1.resize((160, 160)), img2.resize((160, 160))
-    img1_tensor, img2_tensor = toTensor(img1).cuda(), toTensor(img2).cuda()
+    img1_tensor, img2_tensor = toTensor(img1).unsqueeze(0).cuda(), toTensor(img2).unsqueeze(0).cuda()
     img1_adv = ii_fo(img1_tensor, img2_tensor, face_encoder) # torch tensor
     img_adv_pil = transforms.ToPILImage()(img1_adv)
     img_adv_pil.save("test_fo.png")

@@ -7,7 +7,7 @@ def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
     
-    prompt ="Given the two faces created, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Faces:"
+    prompt ="Given the two facial images, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Facial images:"
     
     with torch.no_grad():
         for i in range(len(dataset)):

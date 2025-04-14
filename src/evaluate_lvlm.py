@@ -16,8 +16,15 @@ def main(args):
     # prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer for details. Facial images:"
     acc_0 = 0
     acc_1 = 0
+    num_0 = 0
+    num_1 = 0
     with torch.no_grad():
         for i in range(len(dataset)):
+            if label == 0:
+                num_0 += 1
+            else:
+                num_1 += 1
+                
             img1, img2, label = dataset[i]
             img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
             
@@ -32,8 +39,9 @@ def main(args):
 
     output_path = f"{args.pretrained}_{args.dataset}_{args.model_name}.txt"
     with open(output_path, "w") as f:
-        f.write(f"acc_0: {acc_0 / len(dataset)}\n")
-        f.write(f"acc_1: {acc_1 / len(dataset)}\n")
+        f.write(f"acc_0: {acc_0 / num_0}\n")
+        f.write(f"acc_1: {acc_1 / num_1}\n")
+        f.write(f"acc: {(acc_0 + acc_1) / len(dataset)}\n")
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--pretrained", type=str, default="llava-onevision-qwen2-7b-ov")

@@ -1,0 +1,35 @@
+import argparse
+from dataset import get_dataset
+from get_architech import init_lvlm_model
+import torch
+
+def main():
+    dataset = get_dataset(args.dataset)
+    lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
+    lvlm_model.eval()
+    
+    prompt ="Given the two faces created, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Faces:"
+    
+    with torch.no_grad():
+        for i in range(len(dataset)):
+            img1, img2, label = dataset[i]
+            img1, img2 = img1.resize((160, 160)), img2.resize((160, 160))
+            img1.save("img1.jpg")
+            img2.save("img2.jpg")
+            qs = prompt + image_token * 2
+            print("question: ", qs)
+            output = lvlm_model.inference([img1, img2], "prompt")
+            print("Output: ", output[0])
+            print("Label: ", label)
+
+            break
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pretrained", type=str, default="llava-onevision-qwen2-7b-ov")
+    parser.add_argument("--model_name", type=str, default="llava_qwen")
+    parser.add_argument("--log_output_path", type=str)
+    parser.add_argument("--dataset", type=str, default="lfw")
+    args = parser.parse_args()
+    
+    main(args)

@@ -46,7 +46,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--pretrained", type=str, default="llava-onevision-qwen2-7b-ov")
     parser.add_argument("--model_name", type=str, default="llava_qwen")
-    parser.add_argument("--log_output_path", type=str)
     parser.add_argument("--dataset", type=str, default="lfw")
     args = parser.parse_args()
     

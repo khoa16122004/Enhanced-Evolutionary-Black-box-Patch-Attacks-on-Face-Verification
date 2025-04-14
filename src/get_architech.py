@@ -16,9 +16,6 @@ def get_face_encoder(model_name):
         model =  InceptionResnetV1("casia-webface")
         cp_pack = "../pretrained_model/webface.pt"
    
-    elif model_name == "restnet_vggface_student":
-        model = torch.load("pretrained_model/resnet_vggface_distill.pth")
-        return model 
     
     # elif model_name == "symbolic_reg":
         

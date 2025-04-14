@@ -8,7 +8,7 @@ def main(args):
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
     
     prompt ="Given the two facial images, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Facial images:"
-    prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer. Facial images:"
+    # prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer. Facial images:"
     acc = 0
     
     with torch.no_grad():

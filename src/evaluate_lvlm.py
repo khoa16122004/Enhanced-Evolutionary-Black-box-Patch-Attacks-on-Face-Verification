@@ -40,7 +40,6 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--log_output_path", type=str)
     parser.add_argument("--dataset", type=str, default="lfw")
-    parser.add_argument("--test", type=int, default=0)
     args = parser.parse_args()
     
     main(args)

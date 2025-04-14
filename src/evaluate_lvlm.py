@@ -1,12 +1,18 @@
 import argparse
 from dataset import get_dataset
-from get_architech import init_lvlm_model
+from get_architech import init_lvlm_model, get_face_encoder
 import torch
 from PIL import Image
+from torchvision import transforms
+import torch.nn.functional as F
+
+
+toTensor = transforms.ToTensor()
+
 def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
-    
+    encode_model = get_face_encoder("restnet_vggface")
     # prompt ="Given the two facial images, let me know if they are the same person or not, in the following format: 0 for the same person, 1 for not the same person. Facial images:"
     prompt ="Given the two facial images, let me know if they are the same person or not, explain your answer for details. Facial images:"
     acc = 0
@@ -18,7 +24,12 @@ def main(args):
                 img_test = input("Your path: ")
                 img1 = Image.open(img_test).convert("RGB")
             
-            # img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
+            img1, img2 = img1.resize((160, 160)), img2.resize((160, 160))
+            img1_torch, img2_torch = toTensor(img1), toTensor(img2)
+            fea1, fea2 = encode_model(img1_torch.unsqueeze(0).cuda()), encode_model(img2_torch.unsqueeze(0).cuda())
+            sims = F.cosine_similarity(fea1, fea2, dim=1)
+            print("Sims: ", sims)
+            
             img1.save("img1.jpg")
             img2.save("img2.jpg")
             qs = prompt + image_token * 2

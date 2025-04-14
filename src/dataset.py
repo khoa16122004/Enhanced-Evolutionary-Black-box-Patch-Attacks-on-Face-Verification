@@ -16,7 +16,6 @@ from torchvision.datasets.utils import download_and_extract_archive
 def get_dataset(dataset_name):
     if dataset_name == "lfw":
         dataset = LFW(IMG_DIR="../lfw_dataset/lfw_crop_margin_5",
-                      MASK_DIR=None,
                       PAIR_PATH="../lfw_dataset/pairs.txt",
                       transform=None)
         
@@ -27,7 +26,6 @@ def get_dataset(dataset_name):
 class LFW(Dataset):        
     def __init__(self, 
                  IMG_DIR: str,
-                 MASK_DIR: str,
                  PAIR_PATH: str,
                  transform=transforms.Compose([transforms.ToTensor(),
                                                transforms.Resize((160, 160)),
@@ -39,7 +37,6 @@ class LFW(Dataset):
          
         self.lines = lines
         self.IMG_DIR = IMG_DIR
-        self.MASK_DIR = MASK_DIR
         self.transform = transform
          
     def __len__(self):
@@ -56,13 +53,10 @@ class LFW(Dataset):
             label = 1
         
         first_name = f"{first_iden_name}_{first_id.zfill(4)}.jpg" 
-        first_path = os.path.join(self.IMG_DIR, first_iden_name, first_name)
-        first_mask_path = first_path.replace(self.IMG_DIR, self.MASK_DIR)
-        
+        first_path = os.path.join(self.IMG_DIR, first_iden_name, first_name)        
         
         second_name = f"{second_iden_name}_{second_id.zfill(4)}.jpg"
         second_path =  os.path.join(self.IMG_DIR, second_iden_name, second_name)
-        second_mask_path = second_path.replace(self.IMG_DIR, self.MASK_DIR)
         
         
         first_image = Image.open(first_path).convert("RGB")

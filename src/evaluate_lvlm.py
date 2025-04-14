@@ -14,7 +14,7 @@ def main(args):
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, label = dataset[i]
-            img1, img2 = img1.resize((160, 160)), img2.resize((160, 160))
+            img1, img2 = img1.resize((224, 224)), img2.resize((224, 224))
             img1.save("img1.jpg")
             img2.save("img2.jpg")
             qs = prompt + image_token * 2

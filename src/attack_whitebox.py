@@ -12,8 +12,8 @@ import torch.nn.functional as F
 def ii_fo(img1, img2, facial_encode_model, steps=80, alpha=0.01, epsilon=0.01):
     facial_encode_model.eval()
 
-    img1 = img1.detach().clone().unsqueeze(0).to(torch.float32)  # [1, C, H, W]
-    img2 = img2.detach().clone().unsqueeze(0).to(torch.float32)
+    img1 = img1.detach().clone().to(torch.float32)  # [1, C, H, W]
+    img2 = img2.detach().clone().to(torch.float32)
 
     img1_adv = img1.clone().detach().requires_grad_(True)
 

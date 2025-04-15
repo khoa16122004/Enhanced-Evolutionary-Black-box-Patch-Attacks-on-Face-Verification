@@ -6,41 +6,37 @@ from PIL import Image
 from torchvision import transforms
 import torch.nn.functional as F
 
+import torch
+import torch.nn.functional as F
+
 def ii_fo(img1, img2, facial_encode_model, steps=80, alpha=0.01, epsilon=0.01):
-    # img1, img2: [0, 1]
+    facial_encode_model.eval()
+
+    img1 = img1.detach().clone().unsqueeze(0).to(torch.float32)  # [1, C, H, W]
+    img2 = img2.detach().clone().unsqueeze(0).to(torch.float32)
+
+    img1_adv = img1.clone().detach().requires_grad_(True)
 
     with torch.no_grad():
-        img2_embedding = facial_encode_model(img2)
+        target_feat = facial_encode_model(img2)
+        target_feat = F.normalize(target_feat, dim=1)
 
-    img1_ = img1.clone().detach()
-    img1_.requires_grad = False
+    for _ in range(steps):
+        output_feat = facial_encode_model(img1_adv)
+        output_feat = F.normalize(output_feat, dim=1)
 
-    with torch.no_grad():
-        img1_embedding = facial_encode_model(img1_)
-        print("original sim: ", torch.sum(img1_embedding * img2_embedding, dim=1))
+        loss = F.cosine_similarity(output_feat, target_feat, dim=1).mean() # đang cần giảm
 
-    delta = torch.zeros_like(img1_, requires_grad=True)
-
-    for step in range(steps):
-        image_adv = img1_ + delta
-        clean_image_embedding = facial_encode_model(image_adv)
-        loss = torch.sum(clean_image_embedding * img2_embedding, dim=1)
-        loss = loss.mean()  # maximize similarity -> minimize negative similarity
-        loss.backward(retain_graph=True)
+        img1_adv.grad = None
+        loss.backward()
 
         with torch.no_grad():
-            gradient = delta.grad
-            delta.data = torch.clamp(delta - alpha * torch.sign(gradient), -epsilon, epsilon)
-            delta.grad.zero_()
+            img1_adv += alpha * img1_adv.grad.sign()
+            perturbation = torch.clamp(img1_adv - img1, min=-epsilon, max=epsilon)
+            img1_adv = torch.clamp(img1 + perturbation, 0, 1).detach_().requires_grad_(True)
 
-        print(f"Step {step}, Loss: {-loss.item()}")
+    return img1_adv.squeeze(0)
 
-    img1_adv = img1_ + delta.detach()
-    with torch.no_grad():
-        adv_embedding = facial_encode_model(img1_adv)
-        print("adv sim: ", torch.sum(adv_embedding * img2_embedding, dim=1))
-
-    return img1_adv
 
 toTensor = transforms.ToTensor()
 def main(args):

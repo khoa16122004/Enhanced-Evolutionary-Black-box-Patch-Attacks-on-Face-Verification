@@ -26,7 +26,7 @@ def ii_fo(img1, img2, facial_encode_model, steps=80, alpha=0.01, epsilon=0.01):
         output_feat = F.normalize(output_feat, dim=1)
 
         loss = F.cosine_similarity(output_feat, target_feat, dim=1).mean() # đang cần giảm
-
+        print("sim: ", loss)
         img1_adv.grad = None
         loss.backward()
 

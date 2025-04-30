@@ -37,8 +37,6 @@ class LLava:
         image_tensors = [_image.to(dtype=torch.float16, device=self.device) for _image in image_tensors]
         image_sizes = [image.size for image in img_files]
         
-        print("image_size: ", image_sizes)
-        print("image_tensors: ", image_tensors) 
         with torch.inference_mode():
             cont = self.model.generate(
             input_ids,

@@ -45,8 +45,10 @@ class LLava:
             do_sample=False,
             temperature=0,
             max_new_tokens=4096,
+            # use_cahc
         )
+        input_token_len = input_ids.shape[1]
 
-        text_outputs = self.tokenizer.batch_decode(cont, skip_special_tokens=True)
+        text_outputs = self.tokenizer.batch_decode(cont[:, input_token_len:], skip_special_tokens=True)
         outputs = text_outputs
         return outputs

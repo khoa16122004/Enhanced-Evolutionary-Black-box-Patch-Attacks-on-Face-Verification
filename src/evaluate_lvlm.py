@@ -8,7 +8,7 @@ def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
 
-    prompt = "Given the two facial images, determine whether they belong to the same person. Provide your answer along with an explanation."
+    prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
 
 
     outputs = []

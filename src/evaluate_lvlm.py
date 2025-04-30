@@ -22,8 +22,9 @@ def main(args):
             img2 = img2.resize((224, 224))
 
             question = prompt + image_token * 2
-            response = lvlm_model.inference(question, [img1, img2])
+            response = lvlm_model.inference(question, [img1, img2])[0]
             outputs.append(response)
+            print("Response: ", response)
 
     output_path = f"{args.pretrained}_{args.dataset}_{args.model_name}.txt"
     with open(output_path, "w") as f:

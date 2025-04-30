@@ -18,8 +18,8 @@ def main(args):
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, _ = dataset[i]
-            # img1 = img1.resize((3, 224))
-            # img2 = img2.resize((224, 224))
+            img1 = img1.resize((224, 224))
+            img2 = img2.resize((224, 224))
 
             question = prompt + image_token * 2
             response = lvlm_model.inference(question, [img1, img2])[0]

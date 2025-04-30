@@ -9,18 +9,31 @@ resnet18_url = 'https://download.pytorch.org/models/resnet18-5c106cde.pth'
 
 def get_face_encoder(model_name):
     if model_name == "restnet_vggface":     
+        img_size = 224
+        
         model = InceptionResnetV1("vggface2")
         cp_pack = "../pretrained_model/vggface2.pt"
+        torch_pack = torch.load(cp_pack)
+        model.load_state_dict(torch_pack)
         
     elif model_name == "restnet_webface":
+        img_size = 224
+
         model =  InceptionResnetV1("casia-webface")
         cp_pack = "../pretrained_model/webface.pt"
-   
-    
-    
-    torch_pack = torch.load(cp_pack)
-    model.load_state_dict(torch_pack)
-    
+        torch_pack = torch.load(cp_pack)
+        model.load_state_dict(torch_pack)
+        
+    elif model_name == "ghostfacenet_v1":
+        from ellzaf_ml.models import GhostFaceNetsV1
+        img_size = 112
+        model = GhostFaceNetsV1(image_size=img_size, width=1, dropout=0.)
+        
+    elif model_name == "ghostfacenet_v2":
+        from ellzaf_ml.models import GhostFaceNetsV2
+        img_size = 112
+        model = GhostFaceNetsV2(image_size=img_size, width=1, dropout=0.)
+
     return model.eval().cuda()
 
 

@@ -8,7 +8,7 @@ def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
 
-    prompt = "Given the two facial images, determine whether they belong to the same person. Provide your answer along with an explanation for your reasoning."
+    prompt = "Given the two facial images, determine whether they belong to the same person. Provide your answer along with an explanation."
 
 
     outputs = []
@@ -16,10 +16,11 @@ def main(args):
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, _ = dataset[i]
-            img1 = img1.resize((224, 224))
-            img2 = img2.resize((224, 224))
+            # img1 = img1.resize((224, 224))
+            # img2 = img2.resize((224, 224))
 
             question = prompt + image_token * 2
+            print("Question")
             response = lvlm_model.inference(question, [img1, img2])[0]
             outputs.append(response)
             print("Response: ", response)

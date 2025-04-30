@@ -17,12 +17,6 @@ def get_face_encoder(model_name):
         cp_pack = "../pretrained_model/webface.pt"
    
     
-    # elif model_name == "symbolic_reg":
-        
-    
-    elif model_name == "bisenet":
-        model = BiSeNet(n_classes=19)
-        cp_pack = "pretrained_model/bisenet.pth"
     
     torch_pack = torch.load(cp_pack)
     model.load_state_dict(torch_pack)

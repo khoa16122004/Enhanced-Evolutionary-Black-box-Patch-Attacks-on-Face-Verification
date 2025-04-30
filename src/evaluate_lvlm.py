@@ -20,7 +20,8 @@ def main(args):
             # img2 = img2.resize((224, 224))
 
             question = prompt + image_token * 2
-            print("Question")
+            print("Question: ", question)
+            input()
             response = lvlm_model.inference(question, [img1, img2])[0]
             outputs.append(response)
             print("Response: ", response)

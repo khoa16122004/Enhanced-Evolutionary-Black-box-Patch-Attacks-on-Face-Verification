@@ -24,6 +24,7 @@ def main(args):
             response = lvlm_model.inference(question, [img1, img2])[0]
             outputs.append(response)
             print("Response: ", response)
+            break
 
     output_path = f"{args.pretrained}_{args.dataset}_{args.model_name}.txt"
     with open(output_path, "w") as f:

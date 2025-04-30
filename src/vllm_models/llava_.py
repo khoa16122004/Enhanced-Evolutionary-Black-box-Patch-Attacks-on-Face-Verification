@@ -36,7 +36,8 @@ class LLava:
         image_tensors = process_images(img_files, self.image_processor, self.model.config)
         image_tensors = [_image.to(dtype=torch.float16, device=self.device) for _image in image_tensors]
         image_sizes = [image.size for image in img_files]
-                    
+        attention_mask = torch.ones_like(input_ids)
+           
         with torch.inference_mode():
             cont = self.model.generate(
             input_ids,
@@ -45,10 +46,10 @@ class LLava:
             do_sample=False,
             temperature=0,
             max_new_tokens=4096,
-            # use_cahc
+            pad_token_id=self.tokenizer.pad_token_id,
+            attention_mask=attention_mask,
         )
-        input_token_len = input_ids.shape[1]
 
-        text_outputs = self.tokenizer.batch_decode(cont[:, input_token_len:], skip_special_tokens=True)
+        text_outputs = self.tokenizer.batch_decode(cont, skip_special_tokens=True)
         outputs = text_outputs
         return outputs

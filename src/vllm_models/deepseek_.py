@@ -44,7 +44,7 @@ class DeepSeek:
             use_cache=True
         )
 
-        answer = self.tokenizer.decode(outputs[0].cpu().tolist(), skip_special_tokens=True)
+        answer = self.tokenizer.decode(outputs.cpu().tolist(), skip_special_tokens=True)
         return answer
         
         

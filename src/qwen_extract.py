@@ -3,11 +3,6 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers import GenerationConfig
 import warnings
 
-# Suppress specific warnings if needed, although it's better to address them if possible
-warnings.filterwarnings("ignore", message="None of PyTorch, TensorFlow 2.0 or Flax have been found.*")
-warnings.filterwarnings("ignore", message="Passing Lopad_token_id` to `generate` is deprecated.*") # Handle below
-
-
 # Load tokenizer and model
 # Set pad_token_id directly if not set or different from eos_token_id
 # Qwen models often use eos_token_id as pad_token_id
@@ -37,6 +32,25 @@ model = AutoModelForCausalLM.from_pretrained(
     trust_remote_code=True
 ).eval()
 
+
+
+if tokenizer.chat_template is None:
+    print("Warning: tokenizer.chat_template is None. Setting Qwen ChatML template manually.")
+    chatml_template = (
+        "{% for message in messages %}"
+        "{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}"
+        "{% endfor %}"
+        "{% if add_generation_prompt %}"
+        "{{ '<|im_start|>assistant\n' }}"
+        "{% endif %}"
+    )
+    tokenizer.chat_template = chatml_template
+    print("Chat template set.")
+else:
+    print(f"Tokenizer already has a chat_template: {tokenizer.chat_template}")
+
+
+
 # Ensure model's generation config also uses the correct pad_token_id
 # The line below might be redundant if passing pad_token_id during loading works,
 # but it's good practice to ensure consistency.
@@ -63,7 +77,7 @@ all_user_text = [
 batch_inputs_formatted = []
 for user_text in all_user_text:
     messages = [
-        {"role": "assistant", "content": system_prompt},
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_text}
     ]
     # Apply the template to create the prompt string, ready for tokenization

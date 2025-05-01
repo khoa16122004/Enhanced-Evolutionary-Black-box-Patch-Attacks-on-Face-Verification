@@ -22,13 +22,14 @@ def main(args):
             img2_embedding = model(img2.unsqueeze(0).cuda())
             
             sim = img1_embedding @ img2_embedding.T
+            print("sim: ", sim)
             if sim >= args.threshold:
                 response = 0
             else:
                 response = 1
 
             outputs.append(response)
-            print("Response: ", response)
+            # print("Response: ", response)
             # break
 
     output_path = f"{args.model_name}_{args.dataset}.txt"

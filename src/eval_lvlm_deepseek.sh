@@ -4,4 +4,4 @@
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
 
-python evaluate_lvlm.py --pretrained deepseek-vl-7b-chat --model_name deepseek --dataset lfw
+python facial_verification_lvlm.py --pretrained deepseek-vl-7b-chat --model_name deepseek --dataset lfw

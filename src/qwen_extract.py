@@ -6,14 +6,14 @@ from qwen_generation_utils import make_context, decode_tokens, get_stop_words_id
 # To generate attention masks automatically, it is necessary to assign distinct
 # token_ids to pad_token and eos_token, and set pad_token_id in the generation_config.
 tokenizer = AutoTokenizer.from_pretrained(
-    './',
+    'Qwen/Qwen-7B-Chat',
     pad_token='<|extra_0|>',
     eos_token='<|endoftext|>',
     padding_side='left',
     trust_remote_code=True
 )
 model = AutoModelForCausalLM.from_pretrained(
-    './',
+    'Qwen/Qwen-7B-Chat',
     pad_token_id=tokenizer.pad_token_id,
     device_map="auto",
     trust_remote_code=True

@@ -1,6 +1,6 @@
 import argparse
 from qwen.model import QWENModel
-
+from tqdm import tqdm
 
 
 def main(args):
@@ -23,7 +23,7 @@ def main(args):
     
     
     with open(output_path, "w") as f:
-        for i in range(0, len(responses), args.batch_size):
+        for i in tqdm(range(0, len(responses), args.batch_size)):
             batch_response = responses[i:i + args.batch_size]
 
             output_llm = llm.inference(prompts=batch_response, 

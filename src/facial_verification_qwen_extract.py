@@ -9,10 +9,11 @@ def main(args):
     system_prompt = f"""You will receive a paragraph saying whether two images show the same person or not.
 
     Return:
-    - 0 if they are the same person.
-    - 1 if they are different people.
+    - 0 if they are the same person (Yes).
+    - 1 if they are different people (No).
 
     Only return one character: 0 or 1."""
+
 
     
     with open(args.response_path, "r") as f:

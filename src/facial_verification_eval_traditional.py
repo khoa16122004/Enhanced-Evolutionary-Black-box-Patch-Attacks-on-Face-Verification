@@ -22,8 +22,8 @@ def main(args):
             img1_embedding = model(img1.unsqueeze(0).cuda())
             img2_embedding = model(img2.unsqueeze(0).cuda())
             
-            img1_embedding = F.normalzie(img1_embedding, p=2, dim=1)
-            img2_embedding = F.normalzie(img2_embedding, p=2, dim=1)
+            img1_embedding = F.normalize(img1_embedding, p=2, dim=1)
+            img2_embedding = F.normalize(img2_embedding, p=2, dim=1)
             
             sim = img1_embedding @ img2_embedding.T
             print("sim: ", sim)

@@ -13,12 +13,13 @@ from torchvision.datasets.utils import download_and_extract_archive
 
 
 
-def get_dataset(dataset_name):
+def get_dataset(dataset_name, transform=None):
     if dataset_name == "lfw":
         dataset = LFW(IMG_DIR="../lfw_dataset/lfw_crop_margin_5",
-                      PAIR_PATH="../lfw_dataset/pairs.txt",
-                      transform=None)
-        
+                    PAIR_PATH="../lfw_dataset/pairs.txt",
+                    transform=transform)
+            
+
     return dataset
 
         

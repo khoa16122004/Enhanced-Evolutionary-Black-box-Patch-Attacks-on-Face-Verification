@@ -4,6 +4,7 @@ from get_architech import get_face_encoder
 import torch
 from PIL import Image
 from torchvision import transforms  
+import torch.nn.functional as F
 
 def main(args):
     model, img_size = get_face_encoder(args.model_name)
@@ -20,6 +21,9 @@ def main(args):
             img1, img2, _ = dataset[i]
             img1_embedding = model(img1.unsqueeze(0).cuda())
             img2_embedding = model(img2.unsqueeze(0).cuda())
+            
+            img1_embedding = F.normalzie(img1_embedding, p=2, dim=1)
+            img2_embedding = F.normalzie(img2_embedding, p=2, dim=1)
             
             sim = img1_embedding @ img2_embedding.T
             print("sim: ", sim)

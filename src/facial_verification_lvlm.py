@@ -6,11 +6,12 @@ from PIL import Image
 from torchvision import transforms  
 
 def main(args):
-    transform = transforms.Compose([transforms.Resize((160, 160)),
+    model, img_size = get_face_encoder(args.model_name)
+
+    transform = transforms.Compose([transforms.Resize((img_size, img_size)),
                                     transforms.ToTensor(),
                                     ])
     dataset = get_dataset(args.dataset, transform)
-    model = get_face_encoder(args.model_name)
 
     outputs = []
 
@@ -30,7 +31,7 @@ def main(args):
             print("Response: ", response)
             # break
 
-    output_path = f"{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+    output_path = f"{args.model_name}_{args.dataset}.txt"
     with open(output_path, "w") as f:
         for o in outputs:
             f.write(f"{o}\n")

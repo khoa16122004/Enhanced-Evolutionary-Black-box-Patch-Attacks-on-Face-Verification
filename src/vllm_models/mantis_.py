@@ -17,7 +17,7 @@ class Mantis:
     def inference(self, qs, img_files): # list of pil image
         response, history = chat_mllava(qs, img_files, self.model, self.processor, **self.generation_kwargs)
         
-        return response
+        return [response]
 
         
         

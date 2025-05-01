@@ -1,41 +1,46 @@
 import argparse
 from dataset import get_dataset
-from get_architech import init_lvlm_model
+from get_architech import get_face_encoder
 import torch
 from PIL import Image
+from torchvision import transforms  
 
 def main(args):
-    dataset = get_dataset(args.dataset)
-    lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
+    model, img_size = get_face_encoder(args.model_name)
 
-    prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
-
+    transform = transforms.Compose([transforms.Resize((img_size, img_size)),
+                                    transforms.ToTensor(),
+                                    ])
+    dataset = get_dataset(args.dataset, transform)
 
     outputs = []
 
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, _ = dataset[i]
-            # img1 = img1.resize((224, 224))
-            # img2 = img2.resize((224, 224))
+            img1_embedding = model(img1)
+            img2_embedding = model(img2)
+            
+            sim = img1_embedding @ img2_embedding.T
+            if sim >= args.threshold:
+                response = 0
+            else:
+                response = 1
 
-            question = prompt + image_token * 2
-            print("Question: ", question)
-            response = lvlm_model.inference(question, [img1, img2])[0]
             outputs.append(response)
             print("Response: ", response)
             # break
 
-    output_path = f"{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+    output_path = f"{args.model_name}_{args.dataset}.txt"
     with open(output_path, "w") as f:
         for o in outputs:
             f.write(f"{o}\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pretrained", type=str, default="llava-onevision-qwen2-7b-ov")
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
+    parser.add_argument("--threshold", type=float, default=0.5)
     args = parser.parse_args()
 
     main(args)

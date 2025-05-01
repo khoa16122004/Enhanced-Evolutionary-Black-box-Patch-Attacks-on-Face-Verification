@@ -26,8 +26,8 @@ tokenizer.pad_token_id = tokenizer.eos_token_id
 # For Causal LM generation, left padding is usually required.
 tokenizer.padding_side = "left"
 print(f"Tokenizer padding side set to: {tokenizer.padding_side}")
-print(f"Using pad_token_id: {tokenizer.pad_token_id} ({tokenizer.decode(tokenizer.pad_token_id)})")
-print(f"Using eos_token_id: {tokenizer.eos_token_id} ({tokenizer.decode(tokenizer.eos_token_id)})")
+# print(f"Using pad_token_id: {tokenizer.pad_token_id} ({tokenizer.decode(tokenizer.pad_token_id)})")
+# print(f"Using eos_token_id: {tokenizer.eos_token_id} ({tokenizer.decode(tokenizer.eos_token_id)})")
 
 
 model = AutoModelForCausalLM.from_pretrained(

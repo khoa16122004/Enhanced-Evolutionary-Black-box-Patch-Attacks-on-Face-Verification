@@ -3,11 +3,16 @@ from dataset import get_dataset
 from get_architech import init_lvlm_model
 import torch
 from PIL import Image
+import re
 
 def main(args):
     dataset = get_dataset(args.dataset)
-    with open(args.extracted_path, "r") as f:
-        responses = [int(line.strip()) for line in f.readlines()]
+    with open(args.response_path, "r") as f:
+        responses = []
+        for line in f:
+            match = re.search(r"\b\d+\b", line)
+            if match:
+                responses.append(int(match.group()))
     
     acc_0 = 0
     acc_1 = 0 

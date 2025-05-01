@@ -33,7 +33,8 @@ DO NOT add any explanation, greeting, or any other characters besides the number
 
 
 
-all_raw_text = ['Helo', 'Helo']
+all_raw_text = ['Based on the images provided, the faces appear to be different. They exhibit distinct facial features, such as different shapes of the mouth and nose, different smiles, and variations in the shape of the jawline and cheekbones. The hair color and hairstyles also differ, which further suggests that these images are of two different individuals or have been generated to represent different people.', 
+                'Based on the images provided, the faces appear to be different. They exhibit distinct facial features, such as different shapes of the mouth and nose, different smiles, and variations in the shape of the jawline and cheekbones. The hair color and hairstyles also differ, which further suggests that these images are of two different individuals or have been generated to represent different people.']
 batch_raw_text = []
 for q in all_raw_text:
     raw_text, _ = make_context(

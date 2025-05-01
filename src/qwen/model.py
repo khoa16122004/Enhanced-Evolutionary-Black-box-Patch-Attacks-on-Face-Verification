@@ -31,7 +31,7 @@ class QWENModel:
         batch_raw_text = []
         for q in prompts:
             raw_text, _ = make_context(
-                self.okenizer,
+                self.tokenizer,
                 q,  
                 system=system_prompt,
                 max_window_size=self.model.generation_config.max_window_size,

@@ -18,8 +18,8 @@ def main(args):
     with torch.no_grad():
         for i in range(len(dataset)):
             img1, img2, _ = dataset[i]
-            img1_embedding = model(img1)
-            img2_embedding = model(img2)
+            img1_embedding = model(img1.cuda())
+            img2_embedding = model(img2.cuda())
             
             sim = img1_embedding @ img2_embedding.T
             if sim >= args.threshold:

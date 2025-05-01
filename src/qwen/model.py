@@ -21,7 +21,7 @@ class QWENModel:
                         trust_remote_code=True
                     ).eval()
         
-        self.model.generation_config = GenerationConfig.from_pretrained('Qwen/Qwen-7B-Chat', pad_token_id=tokenizer.pad_token_id)
+        self.model.generation_config = GenerationConfig.from_pretrained('Qwen/Qwen-7B-Chat', pad_token_id=self.tokenizer.pad_token_id)
     
     def inference(self, prompts, system_prompt): 
         """

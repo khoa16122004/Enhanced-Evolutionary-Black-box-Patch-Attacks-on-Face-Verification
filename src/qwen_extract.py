@@ -20,13 +20,24 @@ model = AutoModelForCausalLM.from_pretrained(
 ).eval()
 model.generation_config = GenerationConfig.from_pretrained('Qwen/Qwen-7B-Chat', pad_token_id=tokenizer.pad_token_id)
 
-all_raw_text = ["我想听你说爱我。", "今天我想吃点啥，甜甜的，推荐下", "我马上迟到了，怎么做才能不迟到"]
+all_raw_text = ["Based on the images provided, the faces appear to be different. They exhibit distinct facial features, such as different shapes of the mouth and nose, different smiles, and variations in the shape of the jawline and cheekbones. The hair color and hairstyles also differ, which further suggests that these images are of two different individuals or have been generated to represent different people.", 
+                "Based on the images provided, the faces appear to be different. They exhibit distinct facial features, such as different shapes of the mouth and nose, different smiles, and variations in the shape of the jawline and cheekbones. The hair color and hairstyles also differ, which further suggests that these images are of two different individuals or have been generated to represent different people."]
+
 batch_raw_text = []
+system_prompt = f"""You are an AI assistant specialized in text analysis. Your task is to read the provided text, which is the output of another AI analyzing whether two images depict the same person.
+Based on the text content, determine if the final conclusion is 'same person' or 'different person'.
+Respond *only* with one of the following numbers:
+- Respond with 0 if the conclusion is SAME PERSON.
+- Respond with 1 if the conclusion is DIFFERENT PERSON.
+DO NOT add any explanation, greeting, or any other characters besides the number 0 or 1.
+"""
+
+
 for q in all_raw_text:
     raw_text, _ = make_context(
         tokenizer,
-        q,
-        system="You are a helpful assistant.",
+        q,  
+        system=system_prompt,
         max_window_size=model.generation_config.max_window_size,
         chat_format=model.generation_config.chat_format,
     )

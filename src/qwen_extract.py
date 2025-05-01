@@ -5,7 +5,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f'device: {device}')
 
 # Load the tokenizer with left-padding
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-7B-Chat", padding_side='left')
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen-7B-Chat", padding_side='left')
 
 # Load the model
 model = AutoModelForCausalLM.from_pretrained(

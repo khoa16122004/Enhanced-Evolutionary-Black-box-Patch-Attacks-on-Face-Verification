@@ -34,6 +34,23 @@ model = AutoModelForCausalLM.from_pretrained(
 
 
 
+if tokenizer.chat_template is None:
+    print("Warning: tokenizer.chat_template is None. Setting Qwen ChatML template manually.")
+    chatml_template = (
+        "{% for message in messages %}"
+        "{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}"
+        "{% endfor %}"
+        "{% if add_generation_prompt %}"
+        "{{ '<|im_start|>assistant\n' }}"
+        "{% endif %}"
+    )
+    tokenizer.chat_template = chatml_template
+    print("Chat template set.")
+else:
+    print(f"Tokenizer already has a chat_template: {tokenizer.chat_template}")
+
+
+
 # Ensure model's generation config also uses the correct pad_token_id
 # The line below might be redundant if passing pad_token_id during loading works,
 # but it's good practice to ensure consistency.

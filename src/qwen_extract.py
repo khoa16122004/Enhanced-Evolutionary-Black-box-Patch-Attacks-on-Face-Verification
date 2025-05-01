@@ -9,7 +9,7 @@ tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen-7B-Chat", padding_side='lef
 
 # Load the model
 model = AutoModelForCausalLM.from_pretrained(
-    "Qwen/Qwen1.5-7B-Chat",
+    "Qwen/Qwen7B-Chat",
     torch_dtype="auto",
     device_map="auto"
 )

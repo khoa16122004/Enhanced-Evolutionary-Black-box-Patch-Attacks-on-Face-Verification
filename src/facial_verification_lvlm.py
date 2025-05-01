@@ -21,7 +21,7 @@ def main(args):
 
             question = prompt + image_token * 2
             print("Question: ", question)
-            response = lvlm_model.inference(question, [img1, img2])[0]
+            response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
             outputs.append(response)
             print("Response: ", response)
             # break

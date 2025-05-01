@@ -16,9 +16,9 @@ tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen-7B-Chat", trust_remote_code
 # --- Critical: Set pad_token_id ---
 # Causal LMs need a pad token for batching & attention mask generation during inference.
 # Often, the eos_token is used as the pad token.
-if tokenizer.pad_token_id is None:
-    print("Warning: pad_token_id not set. Setting to eos_token_id.")
-    tokenizer.pad_token_id = tokenizer.eos_token_id
+# if tokenizer.pad_token_id is None:
+    # print("Warning: pad_token_id not set. Setting to eos_token_id.")
+tokenizer.pad_token_id = tokenizer.eos_token_id
     # Ensure the model config also knows about the pad_token_id if set dynamically
     # model.config.pad_token_id = tokenizer.pad_token_id # Do this after loading model
 

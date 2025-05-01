@@ -40,4 +40,5 @@ if __name__ == "__main__":
     parser.add_argument("--extracted_path", type=str)
     parser.add_argument("--dataset", type=str, default="lfw")
     args = parser.parse_args()
+    main(args)
 

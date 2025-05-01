@@ -63,7 +63,7 @@ all_user_text = [
 batch_inputs_formatted = []
 for user_text in all_user_text:
     messages = [
-        {"role": "system", "content": system_prompt},
+        {"role": "assistant", "content": system_prompt},
         {"role": "user", "content": user_text}
     ]
     # Apply the template to create the prompt string, ready for tokenization

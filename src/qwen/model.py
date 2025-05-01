@@ -39,7 +39,7 @@ class QWENModel:
             )
             batch_raw_text.append(raw_text)
         batch_input_ids = self.tokenizer(batch_raw_text, padding='longest')
-        batch_input_ids = torch.LongTensor(batch_input_ids['input_ids']).to(model.device)
+        batch_input_ids = torch.LongTensor(batch_input_ids['input_ids']).to(self.model.device)
         batch_out_ids = self.model.generate(
                             batch_input_ids,
                             return_dict_in_generate=False,

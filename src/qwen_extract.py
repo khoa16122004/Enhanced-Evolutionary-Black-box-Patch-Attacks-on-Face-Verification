@@ -1,60 +1,64 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import GenerationConfig
+from qwen_generation_utils import make_context, decode_tokens, get_stop_words_ids
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f'device: {device}')
-
-# Load the tokenizer with left-padding
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen-7B-Chat", padding_side='left')
-
-# Load the model
+# To generate attention masks automatically, it is necessary to assign distinct
+# token_ids to pad_token and eos_token, and set pad_token_id in the generation_config.
+tokenizer = AutoTokenizer.from_pretrained(
+    './',
+    pad_token='<|extra_0|>',
+    eos_token='<|endoftext|>',
+    padding_side='left',
+    trust_remote_code=True
+)
 model = AutoModelForCausalLM.from_pretrained(
-    "Qwen/Qwen-7B-Chat",
-    torch_dtype="auto",
-    device_map="auto"
+    './',
+    pad_token_id=tokenizer.pad_token_id,
+    device_map="auto",
+    trust_remote_code=True
+).eval()
+model.generation_config = GenerationConfig.from_pretrained('./', pad_token_id=tokenizer.pad_token_id)
+
+all_raw_text = ["我想听你说爱我。", "今天我想吃点啥，甜甜的，推荐下", "我马上迟到了，怎么做才能不迟到"]
+batch_raw_text = []
+for q in all_raw_text:
+    raw_text, _ = make_context(
+        tokenizer,
+        q,
+        system="You are a helpful assistant.",
+        max_window_size=model.generation_config.max_window_size,
+        chat_format=model.generation_config.chat_format,
+    )
+    batch_raw_text.append(raw_text)
+
+batch_input_ids = tokenizer(batch_raw_text, padding='longest')
+batch_input_ids = torch.LongTensor(batch_input_ids['input_ids']).to(model.device)
+batch_out_ids = model.generate(
+    batch_input_ids,
+    return_dict_in_generate=False,
+    generation_config=model.generation_config
 )
+padding_lens = [batch_input_ids[i].eq(tokenizer.pad_token_id).sum().item() for i in range(batch_input_ids.size(0))]
 
-# List of prompts for batch inference
-prompts = [
-    "Give me a short introduction to large language models.",
-    "What is the capital of France?",
-    "Explain the process of photosynthesis.",
-    "What are the benefits of machine learning?"
+batch_response = [
+    decode_tokens(
+        batch_out_ids[i][padding_lens[i]:],
+        tokenizer,
+        raw_text_len=len(batch_raw_text[i]),
+        context_length=(batch_input_ids[i].size(0)-padding_lens[i]),
+        chat_format="chatml",
+        verbose=False,
+        errors='replace'
+    ) for i in range(len(all_raw_text))
 ]
+print(batch_response)
 
-# Messages template for each prompt
-messages_template = [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": None}  # Placeholder for prompt
-]
+response, _ = model.chat(tokenizer, "我想听你说爱我。", history=None)
+print(response)
 
-# Apply chat template to each prompt and tokenize
-texts = [
-    tokenizer.apply_chat_template(
-        [messages_template[0], {"role": "user", "content": prompt}],
-        tokenize=False,
-        add_generation_prompt=True
-    ) for prompt in prompts
-]
+response, _ = model.chat(tokenizer, "今天我想吃点啥，甜甜的，推荐下", history=None)
+print(response)
 
-# Tokenize the batch of formatted prompts
-model_inputs = tokenizer(texts, return_tensors="pt", padding=True, truncation=True).to(device)
-
-# Generate responses in batch
-generated_ids = model.generate(
-    model_inputs.input_ids,
-    max_new_tokens=512, # 512 recommended
-)
-
-# Extract generated tokens corresponding to each input prompt
-generated_ids = [
-    output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
-]
-
-# Decode the generated responses
-responses = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-
-# Print each response
-for i, response in enumerate(responses):
-    print(f"Response to prompt {i + 1}: {response}")
-    print('-'*50)
+response, _ = model.chat(tokenizer, "我马上迟到了，怎么做才能不迟到", history=None)
+print(response)

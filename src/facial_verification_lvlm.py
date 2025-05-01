@@ -8,7 +8,10 @@ def main(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, image_token, special_token = init_lvlm_model(args.pretrained, args.model_name)
 
-    prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
+    if args.return_result == 0:
+        prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
+    else:
+        prompt = "Given the two facial images, determine whether they belong to the same person. Return 0 if they belong to the same person, otherwise return 1"
 
 
     outputs = []
@@ -26,7 +29,7 @@ def main(args):
             print("Response: ", response)
             # break
 
-    output_path = f"{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+    output_path = f"return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
     with open(output_path, "w") as f:
         for o in outputs:
             f.write(f"{o}\n")
@@ -36,6 +39,7 @@ if __name__ == "__main__":
     parser.add_argument("--pretrained", type=str, default="llava-onevision-qwen2-7b-ov")
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
+    parser.add_argument("--return_result", type=int, default=0)
     args = parser.parse_args()
 
     main(args)

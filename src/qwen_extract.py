@@ -206,25 +206,62 @@ batch_response = []
 # Get the length of the input prompt tokens for each item in the batch
 # Note: In a batch, all input sequences are padded to the same length
 input_token_lengths = batch_tokenized_inputs['input_ids'].shape[1]
+print(f"Input token length (including padding): {input_token_lengths}")
+print(f"Raw generation output shape: {batch_output_ids.shape}")
+
 
 for i in range(len(all_user_text)):
-    # Slice the output_ids to get only the generated part (tokens *after* the input)
-    # `batch_output_ids` contains [input_tokens + generated_tokens]
-    generated_ids = batch_output_ids[i, input_token_lengths:]
+    print(f"\n--- Decoding Item {i} ---")
+    # Ensure the slicing indices are valid
+    if input_token_lengths >= batch_output_ids.shape[1]:
+        print(f"Warning: Input length ({input_token_lengths}) >= Output length ({batch_output_ids.shape[1]}). No new tokens generated.")
+        generated_ids = torch.tensor([], dtype=torch.long, device=batch_output_ids.device) # Create empty tensor explicitly
+    else:
+        generated_ids = batch_output_ids[i, input_token_lengths:]
 
-    # Decode the generated tokens
-    response_text = tokenizer.decode(
-        generated_ids,
-        skip_special_tokens=True # Remove special tokens like <|im_end|>, <|endoftext|>
-    )
+    # --- Debugging Prints ---
+    print(f"Output tensor slice for item {i}: batch_output_ids[{i}, {input_token_lengths}:]")
+    print(f"Value of generated_ids before decode: {generated_ids}")
+    print(f"Type of generated_ids: {type(generated_ids)}")
+    print(f"Shape of generated_ids: {generated_ids.shape if isinstance(generated_ids, torch.Tensor) else 'N/A'}")
+    print(f"Is generated_ids None? {generated_ids is None}")
+    # --- End Debugging Prints ---
+
+    response_text = "[ERROR - See Logs]" # Default in case decode fails
+    try:
+        # Ensure generated_ids is not None before attempting decode
+        if generated_ids is None:
+             print("ERROR: generated_ids is None, cannot decode.")
+             # Decide how to handle: skip, error, or placeholder
+             response_text = "[Decoding Error: generated_ids was None]"
+
+        # Check if it's a tensor before decoding, just in case
+        elif not isinstance(generated_ids, torch.Tensor):
+             print(f"ERROR: generated_ids is not a tensor (type: {type(generated_ids)}), cannot decode.")
+             response_text = f"[Decoding Error: generated_ids type was {type(generated_ids)}]"
+        else:
+            # Proceed with decoding if it's a tensor (even if empty)
+             response_text = tokenizer.decode(
+                 generated_ids,
+                 skip_special_tokens=True
+             )
+             print(f"Decoded text: '{response_text}'")
+
+    except TypeError as e:
+        print(f"!!! TypeError during decode for item {i}: {e}")
+        # This block catches the specific error you encountered
+        response_text = "[Decoding TypeError]"
+        # Optionally re-raise if you want the script to stop
+        # raise e
+    except Exception as e:
+        print(f"!!! An unexpected error occurred during decode for item {i}: {e}")
+        response_text = "[Decoding Exception]"
+        # Optionally re-raise
+        # raise e
+
     batch_response.append(response_text.strip()) # .strip() to remove leading/trailing whitespace/newlines
 
-print("\n--- Generated Responses ---")
+print("\n--- Generated Responses (with Debugging) ---")
 for i, resp in enumerate(batch_response):
     print(f"Input {i+1}: {resp}")
-print("--------------------------")
-
-# Expected Output based on inputs:
-# Input 1: 1 (different person)
-# Input 2: 1 (different person)
-# Input 3: 0 (same person)
+print("--------------------------------------------")

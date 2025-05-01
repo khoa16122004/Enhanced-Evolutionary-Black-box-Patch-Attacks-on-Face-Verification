@@ -15,7 +15,6 @@ def main(args):
     """
     
     
-    
     with open(args.response_path, "r") as f:
         responses = [line.strip() for line in f.readlines()]
     

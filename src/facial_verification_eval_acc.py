@@ -22,6 +22,7 @@ def main(args):
     
     for i in range(len(dataset)):
         img1, img2, label = dataset[i]
+        print(i)
         pred = responses[i]
         
         if label == 0:

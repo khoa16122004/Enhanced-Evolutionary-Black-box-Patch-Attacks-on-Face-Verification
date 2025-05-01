@@ -107,7 +107,7 @@ with torch.no_grad():
         attention_mask=batch_tokenized_inputs['attention_mask'],
         generation_config=generation_config
     )
-
+print(batch_output_ids)
 # Decode the generated tokens, skipping the prompt part
 batch_response = []
 # Get the length of the input prompt tokens for each item in the batch

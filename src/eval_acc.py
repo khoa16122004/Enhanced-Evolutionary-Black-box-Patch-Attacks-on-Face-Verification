@@ -7,7 +7,7 @@ import re
 
 def main(args):
     dataset = get_dataset(args.dataset)
-    with open(args.response_path, "r") as f:
+    with open(args.extracted_path, "r") as f:
         responses = []
         for line in f:
             match = re.search(r"\b\d+\b", line)

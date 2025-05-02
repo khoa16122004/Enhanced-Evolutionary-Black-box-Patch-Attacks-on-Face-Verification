@@ -19,7 +19,7 @@ def main(args):
     num_0 = 0
     num_1 = 0   
     avg_acc = 0
-    
+    print("Len: ", len(responses))
     for i in range(len(dataset)):
         img1, img2, label = dataset[i]
         print(i)
@@ -35,7 +35,8 @@ def main(args):
             if pred == label:
                 acc_1 += 1
                 avg_acc += 1
-    
+    print("num_0: ", num_0)
+    print("num_1: ", num_1)
     print(f"acc_0: {acc_0/num_0}, acc_1: {acc_1/num_1}, avg_acc: {avg_acc/len(responses)}")
         
 

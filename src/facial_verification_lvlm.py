@@ -31,7 +31,7 @@ def main(args):
             print("Response: ", response)
             # break
 
-    output_path = f"details={args.detail_prompt}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+    output_path = f"return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
     with open(output_path, "w") as f:
         for o in outputs:
             f.write(f"{o}\n")

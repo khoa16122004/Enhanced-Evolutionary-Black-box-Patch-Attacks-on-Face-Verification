@@ -11,7 +11,7 @@ def main(args):
     if args.return_result == 0:
         prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
     else:
-        if args.details == 0:
+        if args.detail_prompt == 0:
             prompt = "Do these two facial images belong to the same person? Respond with 0 for yes, 1 for no."
         else: 
             prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single digit only: 0 if you conclude they ARE the same person, and 1 if you conclude they are NOT the same person"
@@ -30,7 +30,7 @@ def main(args):
             print("Response: ", response)
             # break
 
-    output_path = f"details_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+    output_path = f"details={args.detail_prompt}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
     with open(output_path, "w") as f:
         for o in outputs:
             f.write(f"{o}\n")

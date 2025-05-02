@@ -38,7 +38,6 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
     parser.add_argument("--return_result", type=int, default=0)
-    parser.add_argument("--detail_prompt", type=int, default=0)
     args = parser.parse_args()
 
     main(args)

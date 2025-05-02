@@ -11,7 +11,7 @@ def main(args):
     if args.return_result == 0:
         prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
     else: 
-        prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single text only: 'Same' if you conclude they ARE the same person, and 'Difference' if you conclude they are NOT the same person"
+        prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single text only: 'same' if you conclude they ARE the same person, and 'difference' if you conclude they are NOT the same person"
     outputs = []
 
     with torch.no_grad():
@@ -23,6 +23,10 @@ def main(args):
             question = prompt + image_token * 2
             print("Question: ", question)
             response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
+            if response.lower() == "same":
+                response = 0
+            else:
+                response = 1
             outputs.append(response)
             print("Response: ", response)
             # break

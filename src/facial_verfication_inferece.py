@@ -11,10 +11,7 @@ def main(args):
     if args.return_result == 0:
         prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
     else:
-        if args.detail_prompt == 0:
-            prompt = "Do these two facial images belong to the same person? Respond with 0 for yes, 1 for no."
-        else: 
-            prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single digit only: 0 if you conclude they ARE the same person, and 1 if you conclude they are NOT the same person"
+        prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single text only: 'Same' if you conclude they ARE the same person, and 'Difference' if you conclude they are NOT the same person"
 
     with torch.no_grad():
         img1 = Image.open(args.img1_path).convert("RGB")
@@ -32,7 +29,6 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
     parser.add_argument("--return_result", type=int, default=0)
-    parser.add_argument("--detail_prompt", type=int, default=0)
     args = parser.parse_args()
 
     main(args)

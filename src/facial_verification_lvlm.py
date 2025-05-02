@@ -11,8 +11,7 @@ def main(args):
     if args.return_result == 0:
         prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
     else:
-        prompt = "Given the two facial images, determine whether they belong to the same person. Return 0 if they belong to the same person, otherwise return 1"
-
+        prompt = "Do these two facial images belong to the same person? Respond with 0 for yes, 1 for no."
 
     outputs = []
 

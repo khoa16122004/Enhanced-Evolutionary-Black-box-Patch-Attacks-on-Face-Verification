@@ -23,15 +23,11 @@ def main(args):
             question = prompt + image_token * 2
             print("Question: ", question)
             response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
-            if response.lower() == "same":
-                response = 0
-            else:
-                response = 1
             outputs.append(response)
             print("Response: ", response)
             # break
 
-    output_path = f"return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+    output_path = f"{args.prefix}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
     with open(output_path, "w") as f:
         for o in outputs:
             f.write(f"{o}\n")
@@ -42,6 +38,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
     parser.add_argument("--return_result", type=int, default=0)
+    parser.add_argument("--prefix", type=str, default="")
     args = parser.parse_args()
 
     main(args)

@@ -25,9 +25,9 @@ def main(args):
             print("Question: ", question)
             response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
             if response == "same":
-                print("The same")
+                print("The same, response: ", response)
             elif response == "different":
-                print("The different")
+                print("The different, response: ", response)
             outputs.append(response)
             # break
 

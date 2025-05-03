@@ -11,7 +11,8 @@ def main(args):
     if args.return_result == 0:
         prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
     else: 
-        prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single text only: 'same' if you conclude they ARE the same person, and 'difference' if you conclude they are NOT the same person"
+        # prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single text only: 'same' if you conclude they ARE the same person, and 'difference' if you conclude they are NOT the same person"
+        prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single digit only: '0' if you conclude they ARE the same person, and '1' if you conclude they are NOT the same person"
     outputs = []
 
     with torch.no_grad():

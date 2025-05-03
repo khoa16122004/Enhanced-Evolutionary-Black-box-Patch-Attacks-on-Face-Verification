@@ -39,7 +39,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
     parser.add_argument("--return_result", type=int, default=0)
-    parser.add_argument("--prefix_path", type=str, default="")
+    parser.add_argument("--prefix", type=str, default="")
     args = parser.parse_args()
 
     main(args)

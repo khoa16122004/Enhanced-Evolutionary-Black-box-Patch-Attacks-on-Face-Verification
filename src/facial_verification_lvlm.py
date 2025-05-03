@@ -24,8 +24,11 @@ def main(args):
             question = prompt + image_token * 2
             print("Question: ", question)
             response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
+            if response == "same":
+                print("The same")
+            elif response == "different":
+                print("The different")
             outputs.append(response)
-            print("Response: ", response)
             # break
 
     output_path = f"{args.prefix}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"

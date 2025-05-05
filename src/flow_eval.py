@@ -51,6 +51,7 @@ def main(args):
         
         output = agent.eval([img1, img2])
         print(f"Final output: {output}")
+        
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -63,5 +64,6 @@ if __name__ == "__main__":
     parser.add_argument("--steps", type=int, default=3)
     args = parser.parse_args()
 
+    main(args)
     
      

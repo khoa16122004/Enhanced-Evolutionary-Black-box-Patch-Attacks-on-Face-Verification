@@ -41,7 +41,7 @@ def main(args):
                 response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
                 print("Response: ", response)
                 outputs.append(response)
-                break
+                # break
 
             output_path = os.path.join(prompt_dir, f"{args.label}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
             with open(output_path, "w") as f:

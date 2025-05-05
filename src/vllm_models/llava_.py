@@ -48,5 +48,6 @@ class LLava:
         )
 
         text_outputs = self.tokenizer.batch_decode(cont, skip_special_tokens=True)
+        print("Text output: ", text_outputs)
         outputs = text_outputs
         return outputs

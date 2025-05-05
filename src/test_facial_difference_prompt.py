@@ -35,7 +35,7 @@ def main(args):
             os.makedirs(prompt_dir, exist_ok=True)
             outputs = []
             for j in lines:
-                img1, img2, label = dataset[i]
+                img1, img2, label = dataset[j]
                 print("label: ", label)
                 img1.save("test_0.png")
                 img2.save("test_1.png")

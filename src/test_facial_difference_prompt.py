@@ -31,7 +31,7 @@ def main(args):
     
     with torch.no_grad():
         for i, prompt in enumerate(tqdm(prompts)):
-            prompt_dir = os.path.join("test_split", i)
+            prompt_dir = os.path.join("test_split", str(i))
             os.mkdir(prompt_dir)
             outputs = []
             for i in lines:

@@ -5,9 +5,8 @@ import os
 from dataset import get_dataset
 
 class AgentWithDetailedQuestions:
-    def __init__(self, lvlm, lvlm_image_token, steps):
+    def __init__(self, lvlm, lvlm_image_token):
         self.lvlm = lvlm
-        self.steps = steps
         self.lvlm_image_token = lvlm_image_token
 
     def ask_question(self, img_files, question, num_samples=10, temperature=0.8):
@@ -56,7 +55,6 @@ class AgentWithDetailedQuestions:
 def main_with_detailed_questions(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)
-    eval_lvlm, eval_lvlm_image_token, eval_lvlm_special_token = init_lvlm_model(args.eval_lvlm_pretrained, args.eval_lvlm_model_name)
     
     with torch.no_grad():
         prompt_dir = os.path.join("test_split", 'question')
@@ -66,23 +64,12 @@ def main_with_detailed_questions(args):
         img2 = Image.open(args.img2_path).convert("RGB")
 
         agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token,
-                                           eval_lvlm, eval_lvlm_image_token,
                                            args.steps)
-        
-        with open(args.split_path, "r") as f:
-            lines = [int(line.strip()) for line in f.readlines()]
-        
-        outputs = []
-        for j in lines:
-            img1, img2, label = dataset[j]
-            response = agent.eval([img1, img2], args.num_samples)
-            print("Response: ", response)
-            outputs.append((j, response))
+            
+        response = agent.eval([img1, img2], args.num_samples)
+        print("Response: ", response)
 
-        output_path = os.path.join(prompt_dir, f"{args.label}_{args.lvlm_pretrained}_{args.dataset}_{args.lvlm_model_name}.txt")
-        with open(output_path, "w") as f:
-            for o in outputs:
-                f.write(f"{o[0]}\t{o[1]}\n")
+
 
 
 if __name__ == "__main__":

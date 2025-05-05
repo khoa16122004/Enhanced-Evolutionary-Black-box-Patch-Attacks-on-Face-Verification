@@ -35,14 +35,14 @@ def main(args):
             os.mkdir(prompt_dir)
             outputs = []
             for i in lines:
-                img1, img2, _ = dataset[i]
+                img1, img2, label = dataset[i]
                 question = prompt + image_token * 2
                 print("Question: ", question)
                 response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
                 outputs.append(response)
                 break
 
-            output_path = os.path.join(prompt_dir, "{args.prefix}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
+            output_path = os.path.join(prompt_dir, f"{args.label}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
             with open(output_path, "w") as f:
                 f.write(f"{prompt}\n")
                 for o in outputs:
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
     parser.add_argument("--return_result", type=int, default=0)
-    parser.add_argument("--prefix", type=str, default="")
+    parser.add_argument("--label", type=str, default="")
     args = parser.parse_args()
 
     main(args)

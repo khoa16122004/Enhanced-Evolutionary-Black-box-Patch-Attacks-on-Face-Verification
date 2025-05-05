@@ -41,12 +41,14 @@ class Agent:
             combined_descriptions += f"Description {i+1}:\n{output}\n\n"
 
         summary_prompt = (
-            "You are given several reasoning descriptions comparing two facial images, along with the images themselves."
-            "Some descriptions may conflict. Pay close attention to the details and disagreement. "
-            "Then conclude: are these **exactly the same person**, **likely the same**, or **clearly different**?\n\n"
+            "You are given several reasoning descriptions comparing two facial images, along with the images themselves. "
+            "Some descriptions may conflict. Focus on the differences. "
+            "Based on the evidence, decide whether the two images show the same person or not. "
+            "Return only one word: **same** or **different**.\n\n"
             f"{combined_descriptions}"
             "Images:"
         )
+
 
         final_response = self.lvlm.inference(
             summary_prompt + self.lvlm_image_token * 2,

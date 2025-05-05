@@ -35,6 +35,8 @@ class LLava:
     def inference(self, qs, img_files, temperature=0, reload=True):
         # reload_llm
         if reload == True:
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
             self.reload()
         
         conv = copy.deepcopy(conv_templates["qwen_1_5"])

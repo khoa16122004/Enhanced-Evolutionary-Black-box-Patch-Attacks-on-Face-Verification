@@ -32,7 +32,7 @@ class LLava:
         
     
     
-    def inference(self, qs, img_files, temperature=0, reload=True):
+    def inference(self, qs, img_files, num_return_sequences=1, do_sample=True, temperature=0, reload=True):
         # reload_llm
         if reload == True:
             if torch.cuda.is_available():
@@ -53,9 +53,10 @@ class LLava:
             input_ids,
             images=image_tensors,
             image_sizes=image_sizes,
-            do_sample=False,
+            do_sample=do_sample,
             temperature=temperature,
             max_new_tokens=4096,
+            num_return_sequences=num_return_sequences,
         )
 
         text_outputs = self.tokenizer.batch_decode(cont, skip_special_tokens=True)

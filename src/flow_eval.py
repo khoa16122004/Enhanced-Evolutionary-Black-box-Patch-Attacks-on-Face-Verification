@@ -24,31 +24,35 @@ class Agent:
             "Provide a detailed explanation before making your conclusion.\n\nImages:"
         )
 
-        previous_output = ""  
+        full_prompt = prompt_base + self.lvlm_image_token * 2
+        output = self.lvlm.inference(full_prompt, img_files, num_return_sequences=5, do_sample=True, 
+                                     temperature=temperature, reload=False)[0].replace("\n", "")
+        print("Response: ", output)
+        # previous_output = ""  
 
-        for i in range(self.steps):
-            prompt = prompt_base + self.lvlm_image_token * 2 + "\n\nPrevious attempt:\n" + previous_output
+        # for i in range(self.steps):
+        #     prompt = prompt_base + self.lvlm_image_token * 2 + "\n\nPrevious attempt:\n" + previous_output
             
-            output = self.lvlm.inference(prompt, img_files, temperature=temperature, reload=False)[0].replace("\n", "")
+        #     output = self.lvlm.inference(prompt, img_files, temperature=temperature, reload=False)[0].replace("\n", "")
             
-            final_prompt = (
-                "You will be given two facial images and a description. "
-                "Decide whether the explanation provided is convincing enough and sufficient to conclude the identity. "
-                "If yes, return 'True', otherwise return 'False'.\n\n"
-                f"Description: \n{output}\n Images: "
-            )
+        #     final_prompt = (
+        #         "You will be given two facial images and a description. "
+        #         "Decide whether the explanation provided is convincing enough and sufficient to conclude the identity. "
+        #         "If yes, return 'True', otherwise return 'False'.\n\n"
+        #         f"Description: \n{output}\n Images: "
+        #     )
 
 
-            eval_output = self.eval_lvlm.inference(final_prompt + self.eval_lvlm_image_token * 2, 
-                                                   img_files, 
-                                                   temperature=temperature, reload=False)[0].replace("\n", "")
+        #     eval_output = self.eval_lvlm.inference(final_prompt + self.eval_lvlm_image_token * 2, 
+        #                                            img_files, 
+        #                                            temperature=temperature, reload=False)[0].replace("\n", "")
 
-            print(f"Step {i}: Large VLM output: {output}, Eval output: {eval_output}\n")
+        #     print(f"Step {i}: Large VLM output: {output}, Eval output: {eval_output}\n")
 
-            previous_output = f"Step {i}: {output}, Eval output: {eval_output}\n"
+        #     previous_output = f"Step {i}: {output}, Eval output: {eval_output}\n"
 
-            if eval_output == "True":
-                return output
+        #     if eval_output == "True":
+        #         return output
 
         return None
 

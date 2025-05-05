@@ -26,7 +26,7 @@ class Agent:
 
         full_prompt = prompt_base + self.lvlm_image_token * 2
         output = self.lvlm.inference(full_prompt, img_files, num_return_sequences=5, do_sample=True, 
-                                     temperature=temperature, reload=False)[0].replace("\n", "")
+                                     temperature=temperature, reload=False)
         print("Response: ", output)
         # previous_output = ""  
 

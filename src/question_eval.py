@@ -43,6 +43,8 @@ class AgentWithDetailedQuestions:
             "Return only one word: **same** or **different**."
         )
         
+        print("Conclusion prompt: ", conclusion_prompt)
+        
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
             img_files, num_return_sequences=1,
@@ -79,8 +81,6 @@ if __name__ == "__main__":
     parser.add_argument("--lvlm_model_name", type=str, default="llava_qwen")
     parser.add_argument("--img1_path", type=str)
     parser.add_argument("--img2_path", type=str)
-    parser.add_argument("--split_path", type=str)
-    parser.add_argument("--label", type=str, default="")
     parser.add_argument("--dataset", type=str, default="lfw")
     parser.add_argument("--num_samples", type=int, default=10)
 

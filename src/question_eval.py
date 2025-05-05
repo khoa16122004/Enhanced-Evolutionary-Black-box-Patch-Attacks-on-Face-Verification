@@ -65,9 +65,7 @@ def main_with_detailed_questions(args):
         img1 = Image.open(args.img1_path).convert("RGB")
         img2 = Image.open(args.img2_path).convert("RGB")
 
-        agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token,
-                                           args.steps)
-            
+        agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token)            
         response = agent.eval([img1, img2], args.num_samples)
         print("Response: ", response)
 

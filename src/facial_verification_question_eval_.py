@@ -77,6 +77,7 @@ def main_with_detailed_questions(args):
                 response = agent.eval([img1, img2], args.num_samples)
                 print("Response: ", response)
                 outputs.append(response)
+                break
         
         output_path = f"question_{args.lvlm_pretrained}_{args.lvlm_model_name}_{args.dataset}.txt"
         with open(output_path, "w") as f:

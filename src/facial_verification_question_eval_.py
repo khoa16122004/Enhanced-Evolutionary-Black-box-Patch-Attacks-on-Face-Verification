@@ -81,6 +81,7 @@ if __name__ == "__main__":
     parser.add_argument("--lvlm_pretrained", type=str, default="llava-onevision-qwen2-7b-ov")
     parser.add_argument("--lvlm_model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
+    parser.add_argument("--num_samples", type=int, default=10)
 
     args = parser.parse_args()
 

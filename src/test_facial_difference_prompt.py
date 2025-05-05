@@ -4,6 +4,7 @@ from get_architech import init_lvlm_model
 import torch
 from PIL import Image
 from tqdm import tqdm
+import os
 
 def main(args):
     dataset = get_dataset(args.dataset)
@@ -29,7 +30,9 @@ def main(args):
         lines = [int(line.strip()) for line in f.readlines()]
     
     with torch.no_grad():
-        for prompt in tqdm(prompts):
+        for i, prompt in enumerate(tqdm(prompts)):
+            prompt_dir = os.path.join("test_split", i)
+            os.mkdir(prompt_dir)
             outputs = []
             for i in lines:
                 img1, img2, _ = dataset[i]
@@ -37,9 +40,9 @@ def main(args):
                 print("Question: ", question)
                 response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
                 outputs.append(response)
-                # break
+                break
 
-            output_path = f"test_split/{args.prefix}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+            output_path = os.path.join(prompt_dir, "{args.prefix}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
             with open(output_path, "w") as f:
                 f.write(f"{prompt}\n")
                 for o in outputs:

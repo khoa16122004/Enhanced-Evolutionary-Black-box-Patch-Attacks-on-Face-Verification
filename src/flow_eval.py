@@ -29,8 +29,8 @@ class Agent:
                                      temperature=temperature, reload=False)
         
         print(len(outputs))
-        for output in outputs:
-            print("Response: ", output)
+        for i, output in enumerate(outputs):
+            print(f"Response {i}: ", output)
         # previous_output = ""  
 
         # for i in range(self.steps):

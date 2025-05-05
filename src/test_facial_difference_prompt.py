@@ -36,6 +36,10 @@ def main(args):
             outputs = []
             for j in lines:
                 img1, img2, label = dataset[i]
+                print("label: ", label)
+                img1.save("test_0.png")
+                img2.save("test_1.png")
+                input("wait")
                 question = prompt + image_token * 2
                 print("Question: ", question)
                 response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")

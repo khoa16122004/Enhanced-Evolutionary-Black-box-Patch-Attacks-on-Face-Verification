@@ -8,7 +8,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 class LLava:
-    def __init__(self, pretrained, model_name):
+    def __init__(self, pretrained, model_name, tempurature=0):
         
         # llava-next-interleave-7b
         # llava-onevision-qwen2-7b-ov
@@ -23,6 +23,7 @@ class LLava:
         overwrite_config["image_aspect_ratio"] = "pad"
         self.llava_model_args["overwrite_config"] = overwrite_config
         self.tokenizer, self.model, self.image_processor, _ = load_pretrained_model(self.pretrained, None, model_name, device_map=self.device_map, **self.llava_model_args)
+        self.tempurature = tempurature
         self.model.eval()
     
     def reload(self):
@@ -31,8 +32,10 @@ class LLava:
         
     
     
-    def inference(self, qs, img_files):
-        self.reload()
+    def inference(self, qs, img_files, temperature=0, reload=True):
+        # reload_llm
+        if reload == True:
+            self.reload()
         
         conv = copy.deepcopy(conv_templates["qwen_1_5"])
         conv.append_message(conv.roles[0], qs)
@@ -49,7 +52,7 @@ class LLava:
             images=image_tensors,
             image_sizes=image_sizes,
             do_sample=False,
-            temperature=0,
+            temperature=temperature,
             max_new_tokens=4096,
         )
 

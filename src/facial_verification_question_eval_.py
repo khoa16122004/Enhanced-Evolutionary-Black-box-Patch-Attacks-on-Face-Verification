@@ -56,8 +56,7 @@ def main_with_detailed_questions(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)
     
-    agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token,
-                                        args.steps)
+    agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token)
     
     outputs = []
     

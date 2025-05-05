@@ -107,6 +107,8 @@ if __name__ == "__main__":
     parser.add_argument("--steps", type=int, default=3)
     parser.add_argument("--split_path", type=str)
     parser.add_argument("--label", type=str, default="")
+    parser.add_argument("--dataset", type=str, default="lfw")
+
 
 
     args = parser.parse_args()

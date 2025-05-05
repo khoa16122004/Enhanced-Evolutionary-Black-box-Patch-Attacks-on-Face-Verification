@@ -59,31 +59,24 @@ def main_with_detailed_questions(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)
     
+    agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token,
+                                        args.steps)
+    
+    outputs = []
+    
     with torch.no_grad():
-        prompt_dir = os.path.join("test_split", 'question')
-        os.makedirs(prompt_dir, exist_ok=True)
+        for i in range(len(dataset)):       
+            img1, img2, label = dataset[i]
+            response = agent.eval([img1, img2], args.num_samples)
+            print("Response: ", response)
+            outputs.append(response)
+            break
+    
+    output_path = f"question_{args.lvlm_pretrained}_{args.lvlm_model_name}_{args.dataset}.txt"
+    with open(output_path, "w") as f:
+        for o in outputs:
+            f.write(f"{o}\n")
 
-        img1 = Image.open(args.img1_path).convert("RGB")
-        img2 = Image.open(args.img2_path).convert("RGB")
-
-        agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token,
-                                           args.steps)
-        
-        outputs = []
-        
-        with torch.no_grad():
-            for i in range(len(dataset)):       
-                img1, img2, label = dataset[i]
-                response = agent.eval([img1, img2], args.num_samples)
-                print("Response: ", response)
-                outputs.append(response)
-                break
-        
-        output_path = f"question_{args.lvlm_pretrained}_{args.lvlm_model_name}_{args.dataset}.txt"
-        with open(output_path, "w") as f:
-            for o in outputs:
-                f.write(f"{o}\n")
-  
 
 
 if __name__ == "__main__":

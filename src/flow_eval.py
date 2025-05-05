@@ -28,6 +28,7 @@ class Agent:
         outputs = self.lvlm.inference(full_prompt, img_files, num_return_sequences=10, do_sample=True, 
                                      temperature=temperature, reload=False)
         
+        print(len(outputs))
         for output in outputs:
             print("Response: ", output)
         # previous_output = ""  

@@ -32,7 +32,7 @@ def main(args):
     with torch.no_grad():
         for i, prompt in enumerate(tqdm(prompts)):
             prompt_dir = os.path.join("test_split", str(i))
-            os.mkdir(prompt_dir)
+            os.makedirs(prompt_dir, exist_ok=True)
             outputs = []
             for i in lines:
                 img1, img2, label = dataset[i]

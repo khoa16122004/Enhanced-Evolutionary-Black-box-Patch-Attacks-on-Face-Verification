@@ -14,13 +14,14 @@ class Agent:
 
     def eval(self, img_files, temperature=0.8):
         prompt_base = (
-            "You are given two facial images. Carefully and strictly compare them across the following biometric features:\n"
-            "- Eyes: shape, spacing, eyelid types, eye bags, wrinkles\n"
-            "- Nose: width, tip shape, bridge height, nostril size\n"
-            "- Mouth: size, upper/lower lip proportion, symmetry\n"
-            "- Jaw and Chin: jaw width, chin protrusion, face symmetry\n"
-            "- Eyebrows: length, arch, gap between brows\n\n"
-            "Be highly critical. If any major differences are found, explain clearly. Then conclude: are these **exactly the same person**, **likely the same**, or **clearly different**?\n\nImages:"
+            "You are shown two facial images. Your task is to carefully identify any significant differences across the following biometric traits:\n"
+            "- Eyes: shape, size, eyelids, wrinkles, spacing\n"
+            "- Nose: length, width, nostrils, bridge\n"
+            "- Mouth: lip thickness, symmetry, corners\n"
+            "- Face shape: jaw width, chin structure, facial symmetry\n"
+            "- Eyebrows: shape, density, gap between brows\n\n"
+            "Be skeptical and assume they are **different people** unless overwhelming evidence proves otherwise. Avoid vague statements. Only conclude 'same person' if features match precisely.\n\n"
+            "Images:"
         )
 
         # Gọi model để sinh 10 mô tả khác nhau

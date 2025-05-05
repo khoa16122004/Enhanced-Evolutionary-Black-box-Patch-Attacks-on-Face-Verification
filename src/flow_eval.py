@@ -17,7 +17,7 @@ class Agent:
     def eval(self, img_files, temperature=0.5):
         prompt_base = (
             "You are given two facial images. Compare them in terms of biometric regions. "
-            "Then decide whether they depict the same person."
+            "Then decide whether they depict the same person.\n\n, Images: "
         )
         for i in range(self.steps):
             

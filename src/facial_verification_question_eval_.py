@@ -5,12 +5,9 @@ import os
 from dataset import get_dataset
 
 class AgentWithDetailedQuestions:
-    def __init__(self, lvlm, lvlm_image_token, eval_lvlm, eval_lvlm_image_token, steps):
+    def __init__(self, lvlm, lvlm_image_token):
         self.lvlm = lvlm
-        self.steps = steps
-        self.eval_lvlm = eval_lvlm
         self.lvlm_image_token = lvlm_image_token
-        self.eval_lvlm_image_token = eval_lvlm_image_token
 
     def ask_question(self, img_files, question, num_samples=10, temperature=0.8):
         # Build prompt for the question

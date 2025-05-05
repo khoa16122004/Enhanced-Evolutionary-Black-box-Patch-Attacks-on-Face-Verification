@@ -42,7 +42,13 @@ def main(args):
         img1 = Image.open(args.img1_path).convert("RGB")
         img2 = Image.open(args.img2_path).convert("RGB")
 
-        agent = Agent(lvlm, eval_lvlm)
+
+        
+        agent = Agent(lvlm, eval_lvlm, args.steps)
+        
+        # lvlm.reload()
+        # eval_lvlm.reload()
+        
         output = agent.eval([img1, img2])
         print(f"Final output: {output}")
 if __name__ == "__main__":

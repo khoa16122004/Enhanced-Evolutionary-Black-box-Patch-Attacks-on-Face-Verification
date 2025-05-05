@@ -86,7 +86,7 @@ def main(args):
                 outputs.append((j, response))
                 # break
 
-            output_path = os.path.join(prompt_dir, f"{args.label}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
+            output_path = os.path.join(prompt_dir, f"{args.label}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
             with open(output_path, "w") as f:
                 for o in outputs:
                     f.write(f"{o[0]}\t{o[1]}\n")

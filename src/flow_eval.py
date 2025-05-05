@@ -14,14 +14,13 @@ class Agent:
 
     def eval(self, img_files, temperature=0.8):
         prompt_base = (
-            "You are given two facial images. Carefully compare them in the following biometric regions:\n"
-            "- Eyes: shape, distance, eyelids\n"
-            "- Nose: size, shape, nostrils\n"
-            "- Mouth: width, lip shape, corners\n"
-            "- Jawline and face shape: contour, chin\n"
-            "- Eyebrows: shape, thickness, distance\n"
-            "\nBased on these comparisons, decide whether the two images likely depict the same person. "
-            "Provide a detailed explanation before making your conclusion.\n\nImages:"
+        "You are given two facial images. Carefully and strictly compare them across the following biometric features:\n"
+        "- Eyes: shape, spacing, eyelid types, eye bags, wrinkles\n"
+        "- Nose: width, tip shape, bridge height, nostril size\n"
+        "- Mouth: size, upper/lower lip proportion, symmetry\n"
+        "- Jaw and Chin: jaw width, chin protrusion, face symmetry\n"
+        "- Eyebrows: length, arch, gap between brows\n\n"
+        "Be highly critical. If any major differences are found, explain clearly. Then conclude: are these **exactly the same person**, **likely the same**, or **clearly different**?\n\nImages:"
         )
 
         full_prompt = prompt_base + self.lvlm_image_token * 2

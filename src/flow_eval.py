@@ -14,7 +14,7 @@ class Agent:
         self.lvlm_image_token = lvlm_image_token
         self.eval_lvlm_image_token = eval_lvlm_image_token
 
-    def eval(self, img_files, temperature=0.8):
+    def eval(self, img_files, num_samples=10, temperature=0.8):
 
         prompt_base = (
             "You are shown two facial images. Your task is to carefully identify any significant differences across the following biometric traits:\n"
@@ -30,14 +30,14 @@ class Agent:
         full_prompt = prompt_base + self.lvlm_image_token * 2
         outputs = self.lvlm.inference(
             full_prompt, img_files,
-            num_return_sequences=10, do_sample=True,
+            num_return_sequences=num_samples, do_sample=True,
             temperature=temperature, reload=False
         )
 
         print(f"Generated {len(outputs)} descriptions:")
         combined_descriptions = ""
         for i, output in enumerate(outputs):
-            print(f"Description {i+1}:\n{output}\n")
+            # print(f"Description {i+1}:\n{output}\n")
             combined_descriptions += f"Description {i+1}:\n{output}\n\n"
 
         summary_prompt = (
@@ -81,7 +81,7 @@ def main(args):
             outputs = []
             for j in lines:
                 img1, img2, label = dataset[j]
-                response = agent.eval([img1, img2])
+                response = agent.eval([img1, img2], args.num_samples)
                 print("Response: ", response)
                 outputs.append((j, response))
                 # break
@@ -108,6 +108,7 @@ if __name__ == "__main__":
     parser.add_argument("--split_path", type=str)
     parser.add_argument("--label", type=str, default="")
     parser.add_argument("--dataset", type=str, default="lfw")
+    parser.add_argument("--num_samples", type=int, default=10)
 
 
 

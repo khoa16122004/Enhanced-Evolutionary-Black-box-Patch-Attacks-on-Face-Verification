@@ -1,6 +1,8 @@
 from get_architech import init_lvlm_model
 import torch
 from PIL import Image
+import os
+from dataset import get_dataset
 
 class Agent:
     def __init__(self, lvlm, lvlm_image_token,
@@ -13,6 +15,7 @@ class Agent:
         self.eval_lvlm_image_token = eval_lvlm_image_token
 
     def eval(self, img_files, temperature=0.8):
+
         prompt_base = (
             "You are shown two facial images. Your task is to carefully identify any significant differences across the following biometric traits:\n"
             "- Eyes: shape, size, eyelids, wrinkles, spacing\n"
@@ -24,7 +27,6 @@ class Agent:
             "Images:"
         )
 
-        # Gọi model để sinh 10 mô tả khác nhau
         full_prompt = prompt_base + self.lvlm_image_token * 2
         outputs = self.lvlm.inference(
             full_prompt, img_files,
@@ -32,7 +34,6 @@ class Agent:
             temperature=temperature, reload=False
         )
 
-        # In từng mô tả và tổng hợp lại
         print(f"Generated {len(outputs)} descriptions:")
         combined_descriptions = ""
         for i, output in enumerate(outputs):
@@ -53,11 +54,12 @@ class Agent:
             do_sample=False, temperature=0, reload=False
         )
 
-        print("Final decision:\n", final_response[0])
+        # print("Final decision:\n", final_response[0])
         return final_response[0]
 
 
 def main(args):
+    dataset = get_dataset(args.dataset)
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)
     eval_lvlm, eval_lvlm_image_token, eval_lvlm_special_token = init_lvlm_model(args.eval_lvlm_pretrained, args.eval_lvlm_model_name)
     
@@ -69,8 +71,29 @@ def main(args):
                       eval_lvlm, eval_lvlm_image_token,
                       args.steps)
 
-        output = agent.eval([img1, img2])
-        print(f"Final output: {output}")
+
+        with open(args.split_path, "r") as f:
+            lines = [int(line.strip()) for line in f.readlines()]
+    
+        with torch.no_grad():
+            prompt_dir = os.path.join("test_split", 'agent')
+            os.makedirs(prompt_dir, exist_ok=True)
+            outputs = []
+            for j in lines:
+                img1, img2, label = dataset[j]
+                response = agent.eval([img1, img2])
+                print("Response: ", response)
+                outputs.append((j, response))
+                # break
+
+            output_path = os.path.join(prompt_dir, f"{args.label}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
+            with open(output_path, "w") as f:
+                for o in outputs:
+                    f.write(f"{o[0]}\t{o[1]}\n")
+
+
+
+
 
 if __name__ == "__main__":
     import argparse
@@ -82,6 +105,10 @@ if __name__ == "__main__":
     parser.add_argument("--img1_path", type=str)
     parser.add_argument("--img2_path", type=str)
     parser.add_argument("--steps", type=int, default=3)
+    parser.add_argument("--split_path", type=str)
+    parser.add_argument("--label", type=str, default="")
+
+
     args = parser.parse_args()
 
     main(args)

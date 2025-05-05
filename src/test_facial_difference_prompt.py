@@ -3,6 +3,7 @@ from dataset import get_dataset
 from get_architech import init_lvlm_model
 import torch
 from PIL import Image
+from tqdm import tqdm
 
 def main(args):
     dataset = get_dataset(args.dataset)
@@ -11,33 +12,42 @@ def main(args):
     if args.return_result == 0:
         prompt = "Given the two facial images, determine whether they belong to the same person. Give the explanation for your choosing"
     else: 
-        prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single text only: 'same' if you conclude they ARE the same person, and 'different' if you conclude they are NOT the same person"
+        prompts = [
+            "Compare the two facial images and answer with 'same' if they show the same person, or 'different' if not.",
+            "Are the two provided face images from the same individual? Reply with 'same' or 'different' only.",
+            "Check if both facial photos depict the same person. Return only 'same' or 'different'.",
+            "Based on facial features, do the two images belong to the same person? Respond: 'same' or 'different'.",
+            "Determine whether the two given face images are of the same individual. Reply using 'same' or 'different'.",
+            "Do these two face images represent the same person? Output only one word: 'same' or 'different'.",
+            "Assess the similarity between these two facial images. Respond only with 'same' or 'different'.",
+            "Look at both facial pictures and decide: are they the same person? Answer with 'same' or 'different'.",
+            "Using only facial information, determine if both images are of the same person. Return 'same' or 'different'.",
+            "Are these two face photos identical in terms of identity? Reply with either 'same' or 'different'."
+        ]
         # prompt = "Analyze the two provided facial images and determine if they belong to the same person. Please respond with a single digit only: '1' if you conclude they ARE the same person, and '0' if you conclude they are NOT the same person"
-    outputs = []
-
+    with open(args.split_path, "r") as f:
+        lines = [int(line.strip()) for line in f.readlines()]
+    
     with torch.no_grad():
-        for i in range(len(dataset)):
-            img1, img2, _ = dataset[i]
-            # img1 = img1.resize((224, 224))
-            # img2 = img2.resize((224, 224))
+        for prompt in tqdm(prompts):
+            outputs = []
+            for i in lines:
+                img1, img2, _ = dataset[i]
+                question = prompt + image_token * 2
+                print("Question: ", question)
+                response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
+                outputs.append(response)
+                # break
 
-            question = prompt + image_token * 2
-            print("Question: ", question)
-            response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
-            if response == "same":
-                print("The same, response: ", response)
-            elif response == "different":
-                print("The different, response: ", response)
-            outputs.append(response)
-            # break
-
-    output_path = f"{args.prefix}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
-    with open(output_path, "w") as f:
-        for o in outputs:
-            f.write(f"{o}\n")
+            output_path = f"test_split/{args.prefix}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt"
+            with open(output_path, "w") as f:
+                f.write(f"{prompt}\n")
+                for o in outputs:
+                    f.write(f"{o}\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--split_path", type=str)
     parser.add_argument("--pretrained", type=str, default="llava-onevision-qwen2-7b-ov")
     parser.add_argument("--model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")

@@ -24,10 +24,16 @@ class LLava:
         self.llava_model_args["overwrite_config"] = overwrite_config
         self.tokenizer, self.model, self.image_processor, _ = load_pretrained_model(self.pretrained, None, model_name, device_map=self.device_map, **self.llava_model_args)
         self.model.eval()
+    
+    def reload(self):
+        self.tokenizer, self.model, self.image_processor, _ = load_pretrained_model(self.pretrained, None, self.model_name, device_map=self.device_map, **self.llava_model_args)
+        self.model.eval()
         
     
     
     def inference(self, qs, img_files):
+        self.reload()
+        
         conv = copy.deepcopy(conv_templates["qwen_1_5"])
         conv.append_message(conv.roles[0], qs)
         conv.append_message(conv.roles[1], None)
@@ -48,6 +54,5 @@ class LLava:
         )
 
         text_outputs = self.tokenizer.batch_decode(cont, skip_special_tokens=True)
-        print("Text output: ", text_outputs)
         outputs = text_outputs
         return outputs

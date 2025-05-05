@@ -14,49 +14,47 @@ class Agent:
 
     def eval(self, img_files, temperature=0.8):
         prompt_base = (
-        "You are given two facial images. Carefully and strictly compare them across the following biometric features:\n"
-        "- Eyes: shape, spacing, eyelid types, eye bags, wrinkles\n"
-        "- Nose: width, tip shape, bridge height, nostril size\n"
-        "- Mouth: size, upper/lower lip proportion, symmetry\n"
-        "- Jaw and Chin: jaw width, chin protrusion, face symmetry\n"
-        "- Eyebrows: length, arch, gap between brows\n\n"
-        "Be highly critical. If any major differences are found, explain clearly. Then conclude: are these **exactly the same person**, **likely the same**, or **clearly different**?\n\nImages:"
+            "You are given two facial images. Carefully and strictly compare them across the following biometric features:\n"
+            "- Eyes: shape, spacing, eyelid types, eye bags, wrinkles\n"
+            "- Nose: width, tip shape, bridge height, nostril size\n"
+            "- Mouth: size, upper/lower lip proportion, symmetry\n"
+            "- Jaw and Chin: jaw width, chin protrusion, face symmetry\n"
+            "- Eyebrows: length, arch, gap between brows\n\n"
+            "Be highly critical. If any major differences are found, explain clearly. Then conclude: are these **exactly the same person**, **likely the same**, or **clearly different**?\n\nImages:"
         )
 
+        # Gọi model để sinh 10 mô tả khác nhau
         full_prompt = prompt_base + self.lvlm_image_token * 2
-        outputs = self.lvlm.inference(full_prompt, img_files, num_return_sequences=10, do_sample=True, 
-                                     temperature=temperature, reload=False)
-        
-        print(len(outputs))
+        outputs = self.lvlm.inference(
+            full_prompt, img_files,
+            num_return_sequences=10, do_sample=True,
+            temperature=temperature, reload=False
+        )
+
+        # In từng mô tả và tổng hợp lại
+        print(f"Generated {len(outputs)} descriptions:")
+        combined_descriptions = ""
         for i, output in enumerate(outputs):
-            print(f"Response {i}: ", output)
-        # previous_output = ""  
+            print(f"Description {i+1}:\n{output}\n")
+            combined_descriptions += f"Description {i+1}:\n{output}\n\n"
 
-        # for i in range(self.steps):
-        #     prompt = prompt_base + self.lvlm_image_token * 2 + "\n\nPrevious attempt:\n" + previous_output
-            
-        #     output = self.lvlm.inference(prompt, img_files, temperature=temperature, reload=False)[0].replace("\n", "")
-            
-        #     final_prompt = (
-        #         "You will be given two facial images and a description. "
-        #         "Decide whether the explanation provided is convincing enough and sufficient to conclude the identity. "
-        #         "If yes, return 'True', otherwise return 'False'.\n\n"
-        #         f"Description: \n{output}\n Images: "
-        #     )
+        summary_prompt = (
+            "You are given multiple reasoning descriptions based on two facial images. "
+            "Some descriptions may conflict. Pay close attention to the details and disagreement. "
+            "Then conclude: are these **exactly the same person**, **likely the same**, or **clearly different**?\n\n"
+            f"{combined_descriptions}"
+            "Images:"
+        )
 
+        final_response = self.lvlm.inference(
+            summary_prompt + self.lvlm_image_token * 2,
+            img_files, num_return_sequences=1,
+            do_sample=False, temperature=0, reload=False
+        )
 
-        #     eval_output = self.eval_lvlm.inference(final_prompt + self.eval_lvlm_image_token * 2, 
-        #                                            img_files, 
-        #                                            temperature=temperature, reload=False)[0].replace("\n", "")
+        print("Final decision:\n", final_response[0])
+        return final_response[0]
 
-        #     print(f"Step {i}: Large VLM output: {output}, Eval output: {eval_output}\n")
-
-        #     previous_output = f"Step {i}: {output}, Eval output: {eval_output}\n"
-
-        #     if eval_output == "True":
-        #         return output
-
-        return None
 
 def main(args):
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)

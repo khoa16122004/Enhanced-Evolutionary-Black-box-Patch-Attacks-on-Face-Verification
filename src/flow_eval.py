@@ -86,7 +86,6 @@ def main(args):
                 response = agent.eval([img1, img2], args.num_samples)
                 print("Response: ", response)
                 outputs.append((j, response))
-                # break
 
             output_path = os.path.join(prompt_dir, f"{args.label}_{args.lvlm_pretrained}_{args.dataset}_{args.lvlm_model_name}.txt")
             with open(output_path, "w") as f:

@@ -34,20 +34,20 @@ def main(args):
             prompt_dir = os.path.join("test_split", str(i))
             os.makedirs(prompt_dir, exist_ok=True)
             outputs = []
-            for i in lines:
+            for j in lines:
                 img1, img2, label = dataset[i]
                 question = prompt + image_token * 2
                 print("Question: ", question)
                 response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
                 print("Response: ", response)
-                outputs.append(response)
+                outputs.append((j, response))
                 # break
 
             output_path = os.path.join(prompt_dir, f"{args.label}_return_result={args.return_result}_{args.pretrained}_{args.dataset}_{args.model_name}.txt")
             with open(output_path, "w") as f:
                 f.write(f"{prompt}\n")
                 for o in outputs:
-                    f.write(f"{o}\n")
+                    f.write(f"{o[0]}\t{o[1]}\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

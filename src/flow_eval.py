@@ -12,7 +12,7 @@ class Agent:
         self.lvlm_image_token = lvlm_image_token
         self.eval_lvlm_image_token = eval_lvlm_image_token
 
-    def eval(self, img_files, temperature=0.5):
+    def eval(self, img_files, temperature=0.8):
         prompt_base = (
             "You are given two facial images. Carefully compare them in the following biometric regions:\n"
             "- Eyes: shape, distance, eyelids\n"

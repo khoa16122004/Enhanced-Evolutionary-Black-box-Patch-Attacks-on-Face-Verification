@@ -39,6 +39,8 @@ def main(args):
                 if pred == 'Different':
                     acc_1 += 1
                     avg_acc += 1
+                else:
+                    print(i)
 
     print("num_0: ", num_0)
     print("num_1: ", num_1)

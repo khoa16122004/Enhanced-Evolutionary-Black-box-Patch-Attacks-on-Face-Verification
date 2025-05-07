@@ -35,7 +35,7 @@ class AgentWithDetailedQuestions:
         
         all_responses = ""
         for question in questions:
-            all_responses += self.ask_question(img_files, question, num_samples, temperature)
+            all_responses += self.ask_question(img_files, question, 1, temperature)
             print(all_responses)
         
         conclusion_prompt = (

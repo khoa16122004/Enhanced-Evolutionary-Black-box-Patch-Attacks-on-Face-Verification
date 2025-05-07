@@ -34,6 +34,7 @@ def main(args):
                 if pred.lower() == 'same':
                     acc_0 += 1
                     avg_acc += 1
+                
             else:
                 num_1 += 1
                 if pred.lower() == 'different':

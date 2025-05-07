@@ -38,7 +38,7 @@ class AgentWithDetailedQuestions:
             all_responses += self.ask_question(img_files, question, num_samples, temperature)
         
         conclusion_prompt = (
-            "Based on the answers to the following questions and the provied images, determine if the two individuals are the same person:\n"
+            "Based on the responses to the facial biometric questions and the provied images, determine if the two individuals are the same person:\n"
             f"{all_responses}\n"
             "Return only one word: **same** or **different**."
         )

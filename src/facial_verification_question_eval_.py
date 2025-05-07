@@ -39,9 +39,9 @@ class AgentWithDetailedQuestions:
         
         
         conclusion_prompt = (
+            "Return only one word: **same** or **different**."
             "Based on the answers to the following questions and the provied images, determine if the two individuals are the same person:\n"
             f"{all_responses}\n"
-            "Return only one word: **same** or **different**."
         )
         
         final_decision = self.lvlm.inference(

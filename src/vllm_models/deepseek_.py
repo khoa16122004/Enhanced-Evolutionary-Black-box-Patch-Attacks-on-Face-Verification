@@ -7,14 +7,19 @@ from transformers import AutoModelForCausalLM
 class DeepSeek:
     def __init__(self, pretrained):
         # deepseek-vl-7b-chat
-        self.vl_chat_processor: VLChatProcessor = VLChatProcessor.from_pretrained(f"deepseek-ai/{pretrained}")
+        self.pretrained = f"deepseek-ai/{pretrained}"
+    
+    def reload(self):
+        self.vl_chat_processor: VLChatProcessor = VLChatProcessor.from_pretrained(self.pretrained)
         self.tokenizer = self.vl_chat_processor.tokenizer
-        
-        self.vl_gpt: MultiModalityCausalLM = AutoModelForCausalLM.from_pretrained(f"deepseek-ai/{pretrained}", trust_remote_code=True)
+        self.vl_gpt: MultiModalityCausalLM = AutoModelForCausalLM.from_pretrained(self.pretrained, trust_remote_code=True)
         self.vl_gpt.to(torch.bfloat16).cuda().eval()
+
+    def inference(self, qs, img_files, num_return_sqequences=1, do_sample=True, temperature=0, reload=True):
         
+        if self.reload == True:
+            self.reload()
         
-    def inference(self, qs, img_files):
         conversation = [
             {
                 "role": "User",
@@ -40,12 +45,14 @@ class DeepSeek:
             bos_token_id=self.tokenizer.bos_token_id,
             eos_token_id=self.tokenizer.eos_token_id,
             max_new_tokens=512,
-            do_sample=False,
-            use_cache=True
+            do_sample=do_sample,
+            use_cache=True,
+            num_return_sqequences=num_return_sqequences,
+            temperature=temperature
         )
 
         answer = self.tokenizer.decode(outputs[0].cpu().tolist(), skip_special_tokens=True)
-        return [answer]
+        return answer
         
         
         

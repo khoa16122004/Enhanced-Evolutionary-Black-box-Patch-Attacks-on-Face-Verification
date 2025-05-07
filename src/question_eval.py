@@ -18,6 +18,10 @@ class AgentWithDetailedQuestions:
             temperature=temperature, reload=False
         )
         
+        print("Generated responses: ", len(outputs))
+        input("Wait")
+        
+        
         # Aggregate outputs
         combined_responses = ""
         for i, output in enumerate(outputs):

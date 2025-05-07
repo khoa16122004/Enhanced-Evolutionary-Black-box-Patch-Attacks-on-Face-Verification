@@ -26,19 +26,20 @@ def main(args):
         print(i)
         pred = responses[i]
         
-        if label == "same":
-            num_0 += 1
-            if pred == label:
-                acc_0 += 1
-                avg_acc += 1
-        elif label == "Different":
-            num_1 += 1
-            if pred == label:
-                acc_1 += 1
-                avg_acc += 1
+        if pred not in ['different', 'same']:
+            print("error: ", pred)
         else:
-            print("Error: ", i)
-            print(i)
+            if label == 0:
+                num_0 += 1
+                if pred == 'same':
+                    acc_0 += 1
+                    avg_acc += 1
+            else:
+                num_1 += 1
+                if pred == 'Different':
+                    acc_1 += 1
+                    avg_acc += 1
+
     print("num_0: ", num_0)
     print("num_1: ", num_1)
     print(f"acc_0: {acc_0/num_0}, acc_1: {acc_1/num_1}, avg_acc: {avg_acc/len(responses)}")

@@ -24,7 +24,7 @@ class AgentWithDetailedQuestions:
             combined_responses += f"Response {i+1}:\n{output}\n\n"
         return combined_responses
 
-    def eval(self, img_files, num_samples=10, temperature=0.8):
+    def eval(self, img_files, num_samples=1, temperature=0.8):
         questions = [
             "Do the eyes of the two individuals have similar size and shape?",
             "Is there a noticeable difference in the nose length and width between the two individuals?",
@@ -36,7 +36,7 @@ class AgentWithDetailedQuestions:
         all_responses = ""
         for question in questions:
             all_responses += self.ask_question(img_files, question, num_samples, temperature)
-        
+            print(all_responses)
         
         conclusion_prompt = (
             "Based on the answers to the following questions and the provied images, determine if the two individuals are the same person:\n"

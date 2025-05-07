@@ -17,7 +17,9 @@ class AgentWithDetailedQuestions:
             num_return_sequences=num_samples, do_sample=True,
             temperature=temperature, reload=False
         )
-        
+                
+        print("Generated responses: ", len(outputs))
+        input("Wait")
         # Aggregate outputs
         combined_responses = ""
         for i, output in enumerate(outputs):

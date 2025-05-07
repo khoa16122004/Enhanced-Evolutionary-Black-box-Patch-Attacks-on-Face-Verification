@@ -50,9 +50,10 @@ class DeepSeek:
             num_return_sequences=num_return_sequences,
             temperature=temperature
         )
-        print(len(outputs))
-        answer = self.tokenizer.decode(outputs.cpu().tolist(), skip_special_tokens=True)
-        return answer
+        
+        answers = self.tokenizer.batch_decode(outputs.cpu().tolist(), skip_special_tokens=True)
+        return answers
+
         
         
         

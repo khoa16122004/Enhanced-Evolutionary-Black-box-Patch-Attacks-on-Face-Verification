@@ -18,8 +18,6 @@ class AgentWithDetailedQuestions:
             temperature=temperature, reload=False
         )
                 
-        print("Generated responses: ", len(outputs))
-        input("Wait")
         # Aggregate outputs
         combined_responses = ""
         for i, output in enumerate(outputs):
@@ -38,6 +36,8 @@ class AgentWithDetailedQuestions:
         all_responses = ""
         for question in questions:
             all_responses += self.ask_question(img_files, question, num_samples, temperature)
+            print(all_responses)
+        
         
         conclusion_prompt = (
             "Based on the answers to the following questions and the provied images, determine if the two individuals are the same person:\n"

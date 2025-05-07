@@ -36,11 +36,12 @@ def main(args):
                     avg_acc += 1
             else:
                 num_1 += 1
-                if pred == 'Different':
+                if pred.lower() == 'Different':
                     acc_1 += 1
                     avg_acc += 1
                 else:
                     print(i)
+                    
 
     print("num_0: ", num_0)
     print("num_1: ", num_1)

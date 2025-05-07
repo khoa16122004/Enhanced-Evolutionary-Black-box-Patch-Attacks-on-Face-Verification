@@ -1,7 +1,6 @@
 from mantis.models.mllava import MLlavaProcessor, LlavaForConditionalGeneration
 from mantis.models.mllava import chat_mllava
 from mantis.models.mllava import MLlavaProcessor, LlavaForConditionalGeneration
-processor = MLlavaProcessor.from_pretrained("TIGER-Lab/Mantis-8B-clip-llama3")
 
 from huggingface_hub import hf_hub_download
 import torch
@@ -15,7 +14,10 @@ class Mantis:
 
         self.generation_kwargs = {"max_new_tokens": 1024, "num_beams": 1, "do_sample": False}
     def inference(self, qs, img_files): # list of pil image
-        response, history = chat_mllava(qs, img_files, self.model, self.processor, **self.generation_kwargs)
+        response, history = chat_mllava(qs, img_files, 
+                                        self.model, 
+                                        self.processor, 
+                                        **self.generation_kwargs)
         
         return [response]
 

@@ -21,7 +21,7 @@ class AgentWithDetailedQuestions:
         # Aggregate outputs
         combined_responses = ""
         for i, output in enumerate(outputs):
-            combined_responses += f"Response {i+1}:\n{output}\n\n"
+            combined_responses += f"Response :\n{output}\n\n"
         return combined_responses
 
     def eval(self, img_files, num_samples=1, temperature=0.8):

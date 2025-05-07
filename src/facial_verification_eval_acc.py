@@ -26,7 +26,7 @@ def main(args):
         print(i)
         pred = responses[i]
         
-        if pred not in ['different', 'same']:
+        if pred not in ['Different', 'same']:
             print("error: ", pred)
         else:
             if label == 0:

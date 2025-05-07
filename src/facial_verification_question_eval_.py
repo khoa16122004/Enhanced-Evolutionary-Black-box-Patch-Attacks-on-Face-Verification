@@ -36,7 +36,6 @@ class AgentWithDetailedQuestions:
         all_responses = ""
         for question in questions:
             all_responses += self.ask_question(img_files, question, num_samples, temperature)
-            print(all_responses)
         
         conclusion_prompt = (
             "Based on the answers to the following questions and the provied images, determine if the two individuals are the same person:\n"
@@ -44,7 +43,6 @@ class AgentWithDetailedQuestions:
             "Return only one word: **same** or **different**."
         )
         
-        print(conclusion_prompt)
         
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
@@ -69,7 +67,6 @@ def main_with_detailed_questions(args):
             response = agent.eval([img1, img2], args.num_samples)
             print("Response: ", response)
             outputs.append(response)
-            break
     
     output_path = f"question_{args.lvlm_pretrained}_{args.lvlm_model_name}_{args.dataset}.txt"
     with open(output_path, "w") as f:

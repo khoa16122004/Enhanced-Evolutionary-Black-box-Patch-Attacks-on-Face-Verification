@@ -44,7 +44,7 @@ class DeepSeek:
             pad_token_id=self.tokenizer.eos_token_id,
             bos_token_id=self.tokenizer.bos_token_id,
             eos_token_id=self.tokenizer.eos_token_id,
-            max_new_tokens=4096,
+            max_new_tokens=1028,
             do_sample=do_sample,
             use_cache=True,
             num_return_sequences=num_return_sequences,

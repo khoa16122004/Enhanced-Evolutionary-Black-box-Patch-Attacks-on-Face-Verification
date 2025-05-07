@@ -65,7 +65,7 @@ def main_with_detailed_questions(args):
         for i in range(len(dataset)):       
             img1, img2, label = dataset[i]
             response = agent.eval([img1, img2], args.num_samples)
-            print("Response: ", response)
+            # print("Response: ", response)
             outputs.append(response)
     
     output_path = f"question_{args.lvlm_pretrained}_{args.lvlm_model_name}_{args.dataset}.txt"

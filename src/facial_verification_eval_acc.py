@@ -10,9 +10,10 @@ def main(args):
     with open(args.extracted_path, "r") as f:
         responses = []
         for line in f:
-            match = re.search(r"\b\d+\b", line)
-            if match:
-                responses.append(int(match.group()))
+            # match = re.search(r"\b\d+\b", line)
+            # if match:
+            #     responses.append(int(match.group()))
+            responses.append(line.strip())
     
     acc_0 = 0
     acc_1 = 0 

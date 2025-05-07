@@ -9,7 +9,7 @@ class AgentWithDetailedQuestions:
         self.lvlm = lvlm
         self.lvlm_image_token = lvlm_image_token
 
-    def ask_question(self, img_files, question, num_samples=10, temperature=0.8):
+    def ask_question(self, img_files, question, num_samples=1, temperature=0.8):
         # Build prompt for the question
         prompt = f"{question}\nImages: {self.lvlm_image_token * 2}"
         outputs = self.lvlm.inference(
@@ -39,9 +39,9 @@ class AgentWithDetailedQuestions:
         
         
         conclusion_prompt = (
-            "Return only one word: **same** or **different**."
             "Based on the answers to the following questions and the provied images, determine if the two individuals are the same person:\n"
             f"{all_responses}\n"
+            "Return only one word: **same** or **different**."
         )
         
         final_decision = self.lvlm.inference(

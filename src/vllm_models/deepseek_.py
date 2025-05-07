@@ -8,7 +8,7 @@ class DeepSeek:
     def __init__(self, pretrained):
         # deepseek-vl-7b-chat
         self.pretrained = f"deepseek-ai/{pretrained}"
-    
+        self.reload()
     def reload(self):
         self.vl_chat_processor: VLChatProcessor = VLChatProcessor.from_pretrained(self.pretrained)
         self.tokenizer = self.vl_chat_processor.tokenizer

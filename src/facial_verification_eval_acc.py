@@ -31,7 +31,7 @@ def main(args):
         else:
             if label == 0:
                 num_0 += 1
-                if pred == 'same':
+                if pred.lower() == 'same':
                     acc_0 += 1
                     avg_acc += 1
             else:

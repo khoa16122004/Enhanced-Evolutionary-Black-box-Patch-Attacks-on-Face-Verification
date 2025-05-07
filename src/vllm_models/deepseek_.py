@@ -15,9 +15,9 @@ class DeepSeek:
         self.vl_gpt: MultiModalityCausalLM = AutoModelForCausalLM.from_pretrained(self.pretrained, trust_remote_code=True)
         self.vl_gpt.to(torch.bfloat16).cuda().eval()
 
-    def inference(self, qs, img_files, num_return_sqequences=1, do_sample=True, temperature=0, reload=True):
+    def inference(self, qs, img_files, num_return_sequences=1, do_sample=True, temperature=0, reload=True):
         
-        if self.reload == True:
+        if reload == True:
             self.reload()
         
         conversation = [
@@ -47,12 +47,12 @@ class DeepSeek:
             max_new_tokens=512,
             do_sample=do_sample,
             use_cache=True,
-            num_return_sqequences=num_return_sqequences,
+            num_return_sequences=num_return_sequences,
             temperature=temperature
         )
 
         answer = self.tokenizer.decode(outputs[0].cpu().tolist(), skip_special_tokens=True)
-        return answer
+        return 
         
         
         

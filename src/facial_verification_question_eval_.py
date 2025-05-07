@@ -44,6 +44,8 @@ class AgentWithDetailedQuestions:
             "Return only one word: **same** or **different**."
         )
         
+        print(conclusion_prompt)
+        
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
             img_files, num_return_sequences=1,

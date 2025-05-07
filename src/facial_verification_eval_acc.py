@@ -23,7 +23,7 @@ def main(args):
     print("Len: ", len(responses))
     for i in range(len(dataset)):
         img1, img2, label = dataset[i]
-        print(i)
+        # print(i)
         pred = responses[i]
         
         if pred.lower() not in ['different', 'same']:

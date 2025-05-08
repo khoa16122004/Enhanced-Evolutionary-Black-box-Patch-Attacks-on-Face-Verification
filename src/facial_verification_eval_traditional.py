@@ -25,7 +25,7 @@ def main(args):
             img1_embedding = F.normalize(img1_embedding, p=2, dim=1)
             img2_embedding = F.normalize(img2_embedding, p=2, dim=1)
             
-            sim = img1_embedding @ img2_embedding.T
+            sim = torch.abs(img1_embedding @ img2_embedding.T)
             print("sim: ", sim)
             if sim >= args.threshold:
                 response = 0

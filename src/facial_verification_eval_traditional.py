@@ -36,7 +36,7 @@ def main(args):
             # print("Response: ", response)
             # break
 
-    output_path = f"{args.model_name}_{args.dataset}.txt"
+    output_path = f"original_image_{args.model_name}_{args.dataset}.txt"
     with open(output_path, "w") as f:
         for o in outputs:
             f.write(f"{o}\n")

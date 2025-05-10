@@ -17,15 +17,18 @@ class Mantis:
         if not do_sample and num_return_sequences > 1:
             raise ValueError("Greedy decoding doesn't support multiple return sequences. Set do_sample=True or num_beams > 1.")
 
-        response, history = chat_mllava(qs, img_files, 
-                                        self.model, 
-                                        self.processor, 
-                                        do_sample=do_sample,
-                                        temperature=temperature,
-                                        max_new_tokens=4096,
-                                        num_return_sequences=num_return_sequences)
-        print("Length of response: ", len(response))
-        return [response]
+        responses = []
+        for i in range(num_return_sequences):
+            
+            response, history = chat_mllava(qs, img_files, 
+                                            self.model, 
+                                            self.processor, 
+                                            do_sample=do_sample,
+                                            temperature=temperature,
+                                            max_new_tokens=4096,
+                                            num_return_sequences=num_return_sequences)
+            responses.append(response)
+        return responses
 
         
         

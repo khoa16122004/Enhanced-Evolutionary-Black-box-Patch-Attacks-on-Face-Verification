@@ -42,7 +42,7 @@ def main(args):
 
     print("num_0: ", num_0)
     print("num_1: ", num_1)
-    print(f"acc_0: {acc_0/num_0}, acc_1: {acc_1/num_1}, avg_acc: {avg_acc/len(num_0+num_1)}")
+    print(f"acc_0: {acc_0/num_0}, acc_1: {acc_1/num_1}, avg_acc: {avg_acc/(num_0+num_1)")
         
 
 

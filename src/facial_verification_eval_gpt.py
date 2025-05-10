@@ -19,7 +19,7 @@ def main(args):
         with open(file_path, "r") as f:
             pred = f.read().strip()
             pred = re.findall(r"\{\{(.*?)\}\}", pred)            
-            
+            print(pred)
         
         if pred.lower() not in ['different', 'same']:
             print("error: ", pred)

@@ -31,7 +31,7 @@ def main(args):
                                        system_prompt=system_prompt)
 
             for out in output_llm:
-                f.write(f"{out}\n")
+                f.write(f"{out.strip()}\n")
         
 
 if __name__ == "__main__":

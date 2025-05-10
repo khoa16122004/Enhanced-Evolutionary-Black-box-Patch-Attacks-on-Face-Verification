@@ -6,7 +6,7 @@ from openai import OpenAI
 from typing import List
 from dataset import get_dataset
 import argparse
-
+from tqdm import tqdm
 import dotenv
 dotenv.load_dotenv()
 
@@ -76,7 +76,7 @@ def main(args):
     os.makedirs(output_dir, exist_ok=True)
     
 
-    for i in range(len(dataset)):
+    for i in tqdm(range(len(dataset))):
         img1_path, img2_path, _ = dataset[i]
         image_response = gpt_service.image_to_text(
             prompt="",

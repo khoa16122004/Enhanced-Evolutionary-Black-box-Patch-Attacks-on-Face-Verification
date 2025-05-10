@@ -14,15 +14,69 @@ from torchvision.datasets.utils import download_and_extract_archive
 
 
 def get_dataset(dataset_name, transform=None):
-    if dataset_name == "lfw":
+    if dataset_name == "lfw_original":
         dataset = LFW(IMG_DIR="../lfw_dataset/lfw_original",
                     PAIR_PATH="../lfw_dataset/pairs.txt",
                     transform=transform)
-            
+    elif dataset_name == "lfw_path_original":
+        dataset = LFW_path(IMG_DIR="../lfw_dataset/lfw_original",
+                    PAIR_PATH="../lfw_dataset/pairs.txt",
+                    transform=transform)
+        
+    elif dataset_name == "lfw":
+        dataset = LFW(IMG_DIR="../lfw_dataset/lfw_crop_margin_5",
+                    PAIR_PATH="../lfw_dataset/pairs.txt",
+                    transform=transform)
+    elif dataset_name == "lfw_path":
+        dataset = LFW_path(IMG_DIR="../lfw_dataset/lfw_crop_margin_5",
+                    PAIR_PATH="../lfw_dataset/pairs.txt",
+                    transform=transform)
 
     return dataset
 
+
+
+class LFW_path(Dataset):        
+    def __init__(self, 
+                 IMG_DIR: str,
+                 PAIR_PATH: str,
+                 transform=transforms.Compose([transforms.ToTensor(),
+                                               transforms.Resize((160, 160)),
+                                               ]),
+                 ):
+        with open(PAIR_PATH, "r") as f:
+            f.readline()
+            lines = [line.strip().split("\t") for line in f.readlines()]
+         
+        self.lines = lines
+        self.IMG_DIR = IMG_DIR
+        self.transform = transform
+         
+    def __len__(self):
+        return len(self.lines)
+
+    def __getitem__(self, idx):
+        line = self.lines[idx]
+        if len(line) == 3:
+            first_iden_name, first_id, second_id = line
+            second_iden_name = first_iden_name 
+            label = 0           
+        elif len(line) == 4:
+            first_iden_name, first_id, second_iden_name, second_id = line
+            label = 1
         
+        first_name = f"{first_iden_name}_{first_id.zfill(4)}.jpg" 
+        first_path = os.path.join(self.IMG_DIR, first_iden_name, first_name)        
+        
+        second_name = f"{second_iden_name}_{second_id.zfill(4)}.jpg"
+        second_path =  os.path.join(self.IMG_DIR, second_iden_name, second_name)
+        
+     
+
+                
+        return first_path, second_path, label
+
+
 
 class LFW(Dataset):        
     def __init__(self, 

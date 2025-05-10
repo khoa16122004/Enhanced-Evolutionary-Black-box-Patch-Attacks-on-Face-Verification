@@ -13,7 +13,7 @@ def main(args):
             # match = re.search(r"\b\d+\b", line)
             # if match:
             #     responses.append(int(match.group()))
-            responses.append(line.strip())
+            responses.append(line.strip().replace("**", ""))
     
     acc_0 = 0
     acc_1 = 0 

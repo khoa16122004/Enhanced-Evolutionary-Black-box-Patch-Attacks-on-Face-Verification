@@ -23,7 +23,7 @@ def main(args):
 
             question = prompt + image_token * 2
             print("Question: ", question)
-            response = lvlm_model.inference(question, [img1, img2], 2, do_sample=True, temperature=0.5, reload=False)
+            response = lvlm_model.inference(question, [img1, img2], 1, do_sample=False, temperature=0.0, reload=False)
             print(response)
             # if response == "same":
             #     print("The same, response: ", response)

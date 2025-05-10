@@ -18,7 +18,7 @@ def main(args):
         file_path = os.path.join(args.extracted_dir, f"{i}.txt")
         with open(file_path, "r") as f:
             pred = f.read().strip()
-            pred = re.findall(r"\{\{(.*?)\}\}", pred)            
+            pred = re.findall(r"\{\{(.*?)\}\}", pred)[0]            
             print(pred)
         
         if pred.lower() not in ['different', 'same']:

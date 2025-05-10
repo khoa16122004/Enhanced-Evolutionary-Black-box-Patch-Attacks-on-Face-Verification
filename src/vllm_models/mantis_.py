@@ -13,14 +13,17 @@ class Mantis:
         self.model = LlavaForConditionalGeneration.from_pretrained(f"TIGER-Lab/{pretrained}", device_map=f"cuda:{torch.cuda.current_device()}", torch_dtype=torch.bfloat16, attn_implementation="flash_attention_2")
 
         self.generation_kwargs = {"max_new_tokens": 1024, "num_beams": 1, "do_sample": False}
-    def inference(self, qs, img_files, num_return_sequences=1, do_sample=True, temperature=0, reload=True): # list of pil image
+    def inference(self, qs, img_files, num_return_sequences=1, do_sample=True, temperature=0, reload=True):
+        if not do_sample and num_return_sequences > 1:
+            raise ValueError("Greedy decoding doesn't support multiple return sequences. Set do_sample=True or num_beams > 1.")
+
         response, history = chat_mllava(qs, img_files, 
                                         self.model, 
                                         self.processor, 
                                         do_sample=do_sample,
                                         temperature=temperature,
                                         max_new_tokens=4096,
-                                        num_return_sequences=num_return_sequences,)
+                                        num_return_sequences=num_return_sequences)
         
         return [response]
 

@@ -24,7 +24,7 @@ class Mantis:
                                         temperature=temperature,
                                         max_new_tokens=4096,
                                         num_return_sequences=num_return_sequences)
-        
+        print("Length of response: ", len(response))
         return [response]
 
         

@@ -3,5 +3,4 @@
 #SBATCH -N 1
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
-python facial_verification_lvlm.py --return_result 0 --pretrained llava-onevision-qwen2-7b-ov --model_name llava_qwen --dataset lfw --prefix original
-python facial_verification_lvlm.py --return_result 0 --pretrained llava-next-interleave-7b --model_name llava_qwen --dataset lfw --prefix original
+python facial_verification_lvlm.py --return_result 0 --pretrained llava-next-interleave-7b --model_name llava_qwen --dataset lfw_original

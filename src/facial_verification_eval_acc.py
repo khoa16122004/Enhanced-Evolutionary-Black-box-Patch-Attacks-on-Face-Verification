@@ -13,11 +13,11 @@ def main(args):
             # match = re.search(r"\b\d+\b", line)
             # if match:
             #     responses.append(int(match.group()))
-            responses.append(line.strip().replace("", ""))
+            # responses.append(line.strip().replace("", ""))
             result = re.search(r"\['(.*?)'\]", line.strip()).group(1)
-            print(result)
+            # print(result)
             # input()
-            # responses.append(result[0])
+            responses.append(result)
             
 
     

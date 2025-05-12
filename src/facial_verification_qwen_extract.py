@@ -1,17 +1,19 @@
 import argparse
 from qwen.model import QWENModel
 from tqdm import tqdm
+from gpt_4o import GPTService
+import os
 
+import dotenv
+dotenv.load_dotenv()
 
 def main(args):
     
-    llm = QWENModel()
+    gpt_service = GPTService(model_name="gpt-4o")
     system_prompt = f"""You will receive a paragraph saying whether two images show the same person or not.
-
     Return:
     - 0 if they are the same person (Yes).
     - 1 if they are different people (No).
-
     Only return one character: 0 or 1."""
 
 
@@ -24,14 +26,12 @@ def main(args):
     
     
     with open(output_path, "w") as f:
-        for i in tqdm(range(0, len(responses), args.batch_size)):
-            batch_response = responses[i:i + args.batch_size]
-
-            output_llm = llm.inference(prompts=batch_response, 
-                                       system_prompt=system_prompt)
-
-            for out in output_llm:
-                f.write(f"{out.strip()}\n")
+        for line in tqdm(responses):
+            output = gpt_service.text_to_image(prompt=f"Paragraph: {line}", 
+                                               system_prompt=system_prompt)
+            print("Response: ", output_path)
+            input()
+            f.write(output + "\n")
         
 
 if __name__ == "__main__":

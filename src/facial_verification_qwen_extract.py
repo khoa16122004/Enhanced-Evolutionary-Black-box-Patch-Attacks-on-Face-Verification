@@ -30,7 +30,7 @@ def main(args):
             output = gpt_service.text_to_text(prompt=f"Paragraph: {line}", 
                                                system_prompt=system_prompt).strip()
             print("Response: ", output)
-            input()
+            # input()
             f.write(output + "\n")
         
 

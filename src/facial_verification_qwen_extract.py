@@ -29,7 +29,7 @@ def main(args):
         for line in tqdm(responses):
             output = gpt_service.text_to_text(prompt=f"Paragraph: {line}", 
                                                system_prompt=system_prompt).strip()
-            print("Response: ", output_path)
+            print("Response: ", output)
             input()
             f.write(output + "\n")
         

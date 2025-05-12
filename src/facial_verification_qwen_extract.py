@@ -27,8 +27,8 @@ def main(args):
     
     with open(output_path, "w") as f:
         for line in tqdm(responses):
-            output = gpt_service.text_to_image(prompt=f"Paragraph: {line}", 
-                                               system_prompt=system_prompt)
+            output = gpt_service.text_to_text(prompt=f"Paragraph: {line}", 
+                                               system_prompt=system_prompt).strip()
             print("Response: ", output_path)
             input()
             f.write(output + "\n")

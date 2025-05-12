@@ -14,9 +14,13 @@ def main(args):
             # if match:
             #     responses.append(int(match.group()))
             # responses.append(line.strip().replace("", ""))
-            result = re.search(r"\['(.*?)'\]", line.strip()).group(1)
-            # print(result)
-            # input()
+            if line.strip().lower() not in ['different', 'same']:
+                result = re.search(r"\['(.*?)'\]", line.strip()).group(1)
+                # print(result)
+                # input()
+            else:
+                result = line.strip()
+            
             responses.append(result)
             
 

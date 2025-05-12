@@ -9,12 +9,13 @@ def main(args):
     dataset = get_dataset(args.dataset)
     with open(args.extracted_path, "r") as f:
         responses = []
-        for line in f:
+        for i, line in enumerate(f):
+            
             match = re.search(r"\b\d+\b", line.strip())
             if match:
                 responses.append(int(match.group()))
             else:
-                print("error: ", line.strip())
+                print(f"error: {i}", line.strip())
             # responses.append(line.strip())
     
     acc_0 = 0

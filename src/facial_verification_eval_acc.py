@@ -14,7 +14,7 @@ def main(args):
             # if match:
             #     responses.append(int(match.group()))
             responses.append(line.strip().replace("", ""))
-            result = re.search(r"\['(.*?)'\]", line.strip())
+            result = re.search(r"\['(.*?)'\]", line.strip()).group(1)
             print(result)
             input()
             responses.append(result[0])

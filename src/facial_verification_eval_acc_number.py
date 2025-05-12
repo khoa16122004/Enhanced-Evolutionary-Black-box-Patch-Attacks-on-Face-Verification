@@ -13,6 +13,8 @@ def main(args):
             match = re.search(r"\b\d+\b", line.strip())
             if match:
                 responses.append(int(match.group()))
+            else:
+                print("error: ", line.strip())
             # responses.append(line.strip())
     
     acc_0 = 0

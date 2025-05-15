@@ -115,8 +115,9 @@ def main(args):
         img1, img2, label = dataset[i]
         # print(i)
         pred = responses[i]
-        pred = parse_response(pred)
         print("Pred: ", pred)
+
+        pred = parse_response(pred)
         if pred.lower() not in ['different', 'same']:
             print("error: ", pred)
         else:

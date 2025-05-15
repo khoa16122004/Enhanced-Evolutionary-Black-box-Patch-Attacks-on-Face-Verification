@@ -21,7 +21,7 @@ def main(args):
         img2 = Image.open(args.img2_path).convert("RGB")
 
         question = prompt + image_token * 2
-        response = lvlm_model.inference(question, [img1, img2])[0].replace("\n", "")
+        response = lvlm_model.inference(question, [img1, img2], 1, False, 0)[0].replace("\n", "")
         print("Response: ", response)
 
 if __name__ == "__main__":

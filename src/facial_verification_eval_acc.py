@@ -116,6 +116,7 @@ def main(args):
         # print(i)
         pred = responses[i]
         pred = parse_response(pred)
+        print("Pred: ", pred)
         if pred.lower() not in ['different', 'same']:
             print("error: ", pred)
         else:
@@ -124,6 +125,7 @@ def main(args):
                 if pred.lower() == 'same':
                     acc_0 += 1
                     avg_acc += 1
+                    
                     
                 
             else:

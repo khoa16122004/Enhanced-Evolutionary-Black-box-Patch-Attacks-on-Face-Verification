@@ -11,13 +11,15 @@ def main(args):
         responses = []
         for line in f:
             # match = re.search(r"\b\d+\b", line)
-            # if match:
-            #     responses.append(int(match.group()))
+            match = re.search(r"\[\s*'?(same|different)'?\s*\]", line, re.IGNORECASE)
+
+            if match:
+                responses.append(int(match.group()))
             # responses.append(line.strip().replace("", ""))
-            if line.strip().lower() not in ['different', 'same']:
-                result = re.search(r"\['(.*?)'\]", line.strip()).group(1)
-                # print(result)
-                # input()
+            # if line.strip().lower() not in ['different', 'same']:
+            #     result = re.search(r"\['(.*?)'\]", line.strip()).group(1)
+            #     # print(result)
+            #     # input()
             else:
                 result = line.strip()
             

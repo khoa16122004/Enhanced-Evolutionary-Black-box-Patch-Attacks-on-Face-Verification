@@ -4,26 +4,35 @@ from get_architech import init_lvlm_model
 import torch
 from PIL import Image
 import re
+from gpt_4o import GTPService
 
+def parse_response(response):
+    response = response.lower()
+
+    patterns = {
+        "same": r"\b(the\s+same|same|yes|identical|matching)\b",
+        "different": r"\b(different|not\s+the\s+same|no|distinct|mismatch(ed)?)\b"
+    }
+
+    for label, pattern in patterns.items():
+        if re.search(pattern, response):
+            return label
+
+    # If not found, fall back to GPT
+    client = GTPService('gpt-4o')
+    system_prompt = (
+        "You have received a response related to a facial verification task. "
+        "Please extract the final answer from the response—such as 'same' or 'different', "
+        "or equivalent expressions like 'yes' or 'no'. "
+        "Normalize the extracted answer to either 'same' or 'different'."
+    )
+    output = client.text_to_text(system_prompt, response)
+    return output.strip().lower()
+    
 def main(args):
     dataset = get_dataset(args.dataset)
     with open(args.extracted_path, "r") as f:
-        responses = []
-        for line in f:
-            # match = re.search(r"\b\d+\b", line)
-            match = re.search(r"\[\s*'?(same|different)'?\s*\]", line, re.IGNORECASE)
-
-            if match:
-                responses.append(int(match.group()))
-            # responses.append(line.strip().replace("", ""))
-            # if line.strip().lower() not in ['different', 'same']:
-            #     result = re.search(r"\['(.*?)'\]", line.strip()).group(1)
-            #     # print(result)
-            #     # input()
-            else:
-                result = line.strip()
-            
-            responses.append(result)
+        responses = [line.strip() for line in f.readlines()]
             
 
     
@@ -37,7 +46,7 @@ def main(args):
         img1, img2, label = dataset[i]
         # print(i)
         pred = responses[i]
-        
+        pred = parse_response(pred)
         if pred.lower() not in ['different', 'same']:
             print("error: ", pred)
         else:

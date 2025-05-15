@@ -131,8 +131,8 @@ def main(args):
                 if pred.lower() == 'different':
                     acc_1 += 1
                     avg_acc += 1
-                else:
-                    print(i)
+                # else:
+                #     print(i)
                     
 
     print("num_0: ", num_0)

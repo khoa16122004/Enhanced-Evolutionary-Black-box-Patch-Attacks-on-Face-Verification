@@ -19,6 +19,7 @@ def parse_response(response):
             return label
 
     # If not found, fall back to GPT
+    print("Using GPT")
     client = GTPService('gpt-4o')
     system_prompt = (
         "You have received a response related to a facial verification task. "

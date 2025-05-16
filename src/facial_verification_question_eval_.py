@@ -77,7 +77,7 @@ def main_with_detailed_questions(args):
                     continue
                 else:
                     index_dir = os.path.join(output_dir, str(i))
-                     os.makedirs(index_dir, exist_ok=True)
+                    os.makedirs(index_dir, exist_ok=True)
             else:
                 num_1 += 1
                 if num_1 > 10:

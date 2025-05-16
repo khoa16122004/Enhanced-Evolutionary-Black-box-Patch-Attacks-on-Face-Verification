@@ -120,6 +120,7 @@ class AgentWithDetailedQuestions:
           "Here are the responses:"
           "{selection_responses}"
         )
+        print("Conclusion Prompt: ", conclusion_prompt)
         
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,

@@ -36,8 +36,9 @@ class AgentWithDetailedQuestions:
             all_responses.append(outputs)    
                 
         conclusion_prompt = (
-            "Based on the responses to the facial biometric questions and the provied images, determine if the two individuals are the same person:\n"
+            "Given the responses to the facial biometric questions and the provided images, determine whether the two individuals are the same person:\n"
             f"{all_responses}\n"
+            "Give more weight to responses indicating differences in features.\n"
             "Return only one word: **same** or **different**."
         )
         
@@ -62,7 +63,7 @@ def main_with_detailed_questions(args):
     num_0 = 0
     num_1 = 0
     with torch.no_grad():
-        for i in range(len(dataset)):    
+        for i in range(310, len(dataset)):    
             
             if num_0 > 10 and num_1 > 10:
                 break

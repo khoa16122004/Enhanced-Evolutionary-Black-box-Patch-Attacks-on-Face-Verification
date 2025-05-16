@@ -14,46 +14,65 @@ def load_example(index, input_dir, dataset_name):
     decide_path = os.path.join(index_dir, "decide.txt")
     decide_text = open(decide_path, "r").read().strip() if os.path.exists(decide_path) else "Not found"
 
-    # Load question & response
+    questions = [
+        "Do the eyes of the two individuals have similar size and shape?",
+        "Is there a noticeable difference in the nose length and width between the two individuals?",
+        "Are the mouths of the two individuals similar in terms of lip thickness and symmetry?",
+        "Do the facial structures, such as the jaw and chin, appear similar?",
+        "Do the individuals have similar eyebrow shapes, density, or gaps between brows?"
+    ]
+
     qa_list = []
-    for i in range(5):  # assuming 5 questions
-        question_path = os.path.join(index_dir, f"question_{i}.txt")
-        if os.path.exists(question_path):
-            with open(question_path, "r") as f:
-                line = f.readline().strip()
-                if "\t" in line:
-                    question, response = line.split("\t", 1)
-                    qa_list.append((question, response))
-                else:
-                    qa_list.append(("Invalid format", line))
+    for i, question in enumerate(questions):
+        question_dir = os.path.join(index_dir, f"question_{i}")
+        responses = []
+
+        if os.path.exists(question_dir):
+            for response_file in sorted(os.listdir(question_dir)):
+                if response_file.startswith("response_"):
+                    response_path = os.path.join(question_dir, response_file)
+                    with open(response_path, "r") as f:
+                        response_text = f.read().strip()
+                    responses.append(f"{response_file}:\n{response_text}")
         else:
-            qa_list.append((f"question_{i}.txt not found", ""))
+            responses.append("No responses found.")
+
+        qa_list.append((question, "\n\n".join(responses)))
 
     return img1, img2, str(label), decide_text, qa_list
 
 
 def gradio_ui():
-    def show(index, input_dir, dataset_name):
-        img1, img2, label, decide, qa_list = load_example(index, input_dir, dataset_name)
-        questions = "\n".join([f"Q{i+1}: {q}\n→ {a}" for i, (q, a) in enumerate(qa_list)])
-        return img1, img2, label, decide, questions
+    with gr.Blocks(title="Visualize Comparison QA") as demo:
+        gr.Markdown("# 👥 Visual QA Comparison Viewer")
 
-    gr.Interface(
-        fn=show,
-        inputs=[
-            gr.Number(label="Sample Index", value=0),
-            gr.Textbox(label="Input Directory", placeholder="Path to input dir"),
-            gr.Textbox(label="Dataset Name", placeholder="Dataset name used in get_dataset"),
-        ],
-        outputs=[
-            gr.Image(label="Image 1"),
-            gr.Image(label="Image 2"),
-            gr.Textbox(label="Label"),
-            gr.Textbox(label="Decision"),
-            gr.Textbox(label="Questions and Responses", lines=10),
-        ],
-        title="Visualize Comparison QA"
-    ).launch()
+        with gr.Row():
+            index = gr.Number(label="Sample Index", value=0)
+            input_dir = gr.Textbox(label="Input Directory", placeholder="Path to input dir")
+            dataset_name = gr.Textbox(label="Dataset Name", placeholder="Dataset name used in get_dataset")
+            run_button = gr.Button("Load Example")
+
+        with gr.Row():
+            img1_output = gr.Image(label="Image 1")
+            img2_output = gr.Image(label="Image 2")
+
+        label_output = gr.Textbox(label="Label")
+        decide_output = gr.Textbox(label="Decision")
+
+        qa_blocks = [gr.Markdown() for _ in range(5)]
+
+        def update_all(index, input_dir, dataset_name):
+            img1, img2, label, decide, qa_list = load_example(int(index), input_dir, dataset_name)
+            qa_texts = [f"### Q{i+1}: {q}\n\n```\n{a}\n```" for i, (q, a) in enumerate(qa_list)]
+            return [img1, img2, label, decide] + qa_texts
+
+        run_button.click(
+            fn=update_all,
+            inputs=[index, input_dir, dataset_name],
+            outputs=[img1_output, img2_output, label_output, decide_output] + qa_blocks
+        )
+
+    demo.launch()
 
 
 if __name__ == "__main__":

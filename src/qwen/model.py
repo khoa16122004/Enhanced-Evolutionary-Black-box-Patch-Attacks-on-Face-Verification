@@ -4,7 +4,7 @@ from transformers import GenerationConfig
 from qwen.qwen_generation_utils import make_context, decode_tokens, get_stop_words_ids
 
 class QWENModel:
-    def __init__(self, model_name="Qwen/Qwen-1.8B-Chat"):
+    def __init__(self, model_name="Qwen/Qwen-1_8B-Chat"):
         self.tokenizer = AutoTokenizer.from_pretrained(
                             model_name,
                             pad_token='<|extra_0|>',

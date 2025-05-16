@@ -120,14 +120,11 @@ class AgentWithDetailedQuestions:
           "Here are the responses:"
           f"{selection_responses}"
         )
-        print("Conclusion Prompt: ", conclusion_prompt)
-        input("Press Enter to continue...")
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
             img_files, num_return_sequences=1,
             do_sample=True, temperature=0.8, reload=False
         )
-        print("Final Decision: ", final_decision)
 
         return final_decision[0], all_responses, selection_responses
 

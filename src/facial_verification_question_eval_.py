@@ -61,6 +61,7 @@ def main_with_detailed_questions(args):
     
     with torch.no_grad():
         for i in range(len(dataset), 10):    
+            print("Khoa")
             index_dir = os.path.join(output_dir, str(i))
             os.makedirs(index_dir, exist_ok=True)
             

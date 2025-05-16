@@ -121,8 +121,7 @@ class AgentWithDetailedQuestions:
           "{selection_responses}"
         )
         print("Conclusion Prompt: ", conclusion_prompt)
-        break
-        
+        input("Press Enter to continue...")
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
             img_files, num_return_sequences=1,

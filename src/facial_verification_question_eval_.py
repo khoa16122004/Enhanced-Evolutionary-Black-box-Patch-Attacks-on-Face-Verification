@@ -36,9 +36,9 @@ class AgentWithDetailedQuestions:
             all_responses.append(outputs)    
                 
         conclusion_prompt = (
-            "Given the responses to the facial biometric questions and the provided images, determine whether the two images are the same person:\n"
-            "Give more weight to responses indicating differences in features.\n"
-            "Return only one word: **same** or **different**."
+            "Given the responses describing facial features in two images, imagine each response casts a vote on whether the images show the same person or different people."
+            "Give more weight to responses that highlight differences in biometric features"
+            "Based on the overall 'vote', return only one word: same or different."
             f"{all_responses}\n"
         )
         

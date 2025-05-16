@@ -36,10 +36,10 @@ class AgentWithDetailedQuestions:
             all_responses.append(outputs)    
                 
         conclusion_prompt = (
-            "Given the responses to the facial biometric questions and the provided images, determine whether the two individuals are the same person:\n"
-            f"{all_responses}\n"
+            "Given the responses to the facial biometric questions and the provided images, determine whether the two images are the same person:\n"
             "Give more weight to responses indicating differences in features.\n"
             "Return only one word: **same** or **different**."
+            f"{all_responses}\n"
         )
         
         final_decision = self.lvlm.inference(

@@ -103,7 +103,7 @@ class AgentWithDetailedQuestions:
             all_responses.append(outputs)        
         
             # response_selecion
-            selection_voting = f"You will receive a list of responses to a question. Your task is to synthesize a final answer based on the ideas that appear most frequently across the responses"
+            selection_voting = f"You will receive a list of responses to a binary choice question. Your task is to synthesize a final answer based on the choices and ideas that appear most frequently across the responses"
             prompt = f"Question: {question}\n Responses: {outputs}\n"
             
             selection_response = gptservice.text_to_text(prompt, selection_voting)
@@ -165,21 +165,23 @@ def main_with_detailed_questions(args):
                     os.makedirs(index_dir, exist_ok=True)
                 
             final_decision, all_responses, selection_responses = agent.eval([img1, img2], args.num_samples)
-            print("Final Decision: ", final_decision)
-            print("All Responses: ", all_responses)
-            print("Selection Decision: ", selection_responses)
-            break
-            # with open(os.path.join(index_dir, "decide.txt"), "w") as f:
-            #     f.write(f"{final_decision}\n")
-            
-            # for j, question in enumerate(all_responses):
-            #     question_dir = os.path.join(index_dir, f"question_{j}")
-            #     os.makedirs(question_dir, exist_ok=True)
+            # print("Final Decision: ", final_decision)
+            # print("All Responses: ", all_responses)
+            # print("Selection Decision: ", selection_responses)
+            # break
+            with open(os.path.join(index_dir, "decide.txt"), "w") as f:
+                f.write(f"{final_decision}\n")
+            with open(os.path.join(index_dir, "selection.txt"), "w") as f:
+                for response in selection_responses:
+                    f.write(f"{response}\n")
+            for j, question in enumerate(all_responses):
+                question_dir = os.path.join(index_dir, f"question_{j}")
+                os.makedirs(question_dir, exist_ok=True)
                 
-            #     for k, response in enumerate(all_responses[j]):
-            #         response_path = os.path.join(question_dir, f"response_{k}.txt")
-            #         with open(response_path, "w") as f:
-            #             f.write(f"{response}\n")
+                for k, response in enumerate(all_responses[j]):
+                    response_path = os.path.join(question_dir, f"response_{k}.txt")
+                    with open(response_path, "w") as f:
+                        f.write(f"{response}\n")
 
 
 

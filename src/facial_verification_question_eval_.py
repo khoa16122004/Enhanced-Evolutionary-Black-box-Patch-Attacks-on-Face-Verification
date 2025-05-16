@@ -7,6 +7,7 @@ import dotenv
 from openai import OpenAI
 from typing import Optional
 import base64
+from typing import List
 
 dotenv.load_dotenv()
 class GPTService:

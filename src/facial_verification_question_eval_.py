@@ -35,12 +35,7 @@ class AgentWithDetailedQuestions:
             outputs = self.ask_question(img_files, question, num_samples, temperature)
             all_responses.append(outputs)    
                 
-        conclusion_prompt = (
-            "Given the responses describing facial features in two images, imagine each response casts a vote on whether the images show the same person or different people."
-            "Give more weight to responses that highlight differences in biometric features"
-            "Based on the overall 'vote', return only one word: same or different."
-            f"{all_responses}\n"
-        )
+        conclusion_prompt = f"Given the responses describing facial features in two images, imagine each response casts a vote on whether the images show the same person or different people. Give more weight to responses that highlight differences in biometric features. Based on the overall vote, return only one word: same or different. {all_responses}"
         
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,

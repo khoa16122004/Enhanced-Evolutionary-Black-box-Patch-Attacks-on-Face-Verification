@@ -64,7 +64,7 @@ def main_with_detailed_questions(args):
     with torch.no_grad():
         for i in range(len(dataset)):    
             
-            if num_0 == 10 and num_1 == 10:
+            if num_0 > 10 and num_1 > 10:
                 break
 
             

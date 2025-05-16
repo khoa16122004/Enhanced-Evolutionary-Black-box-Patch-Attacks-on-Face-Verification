@@ -18,11 +18,7 @@ class AgentWithDetailedQuestions:
             temperature=temperature, reload=False
         )
 
-        # Aggregate outputs
-        combined_responses = ""
-        for i, output in enumerate(outputs):
-            combined_responses += f"Response :\n{output}\n\n"
-        return combined_responses
+        return outputs
 
     def eval(self, img_files, num_samples=1, temperature=0.8):
         questions = [
@@ -33,24 +29,25 @@ class AgentWithDetailedQuestions:
             "Do the individuals have similar eyebrow shapes, density, or gaps between brows?"
         ]
         
-        all_responses = ""
-        for question in questions:
-            all_responses += self.ask_question(img_files, question, num_samples, temperature)
         
+        all_responses = []
+        for i, question in enumerate(questions):
+            outputs = self.ask_question(img_files, question, num_samples, temperature)
+            all_responses.append(outputs)    
+                
         conclusion_prompt = (
             "Based on the responses to the facial biometric questions and the provied images, determine if the two individuals are the same person:\n"
             f"{all_responses}\n"
             "Return only one word: **same** or **different**."
         )
         
-        
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
             img_files, num_return_sequences=1,
-            do_sample=True, temperature=0.8, reload=False
+            do_sample=False, temperature=0.0, reload=False
         )
 
-        return final_decision[0]
+        return final_decision[0], all_responses
 
 
 def main_with_detailed_questions(args):
@@ -58,20 +55,29 @@ def main_with_detailed_questions(args):
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)
     
     agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token)
+    output_dir = f"question_pretrained={args.lvlm_pretrained}_modelname={args.lvlm_model_name}_dataset={args.dataset}_num_samples={args.num_samples}"
+    os.makedirs(output_dir, exist_ok=True)
     
-    outputs = []
     
     with torch.no_grad():
-        for i in range(len(dataset)):       
+        for i in range(len(dataset), 10):    
+            index_dir = os.path.join(output_dir, str(i))
+            os.makedirs(index_dir, exist_ok=True)
+            
             img1, img2, label = dataset[i]
-            response = agent.eval([img1, img2], args.num_samples)
-            print("Response: ", response)
-            outputs.append(response)
-    
-    output_path = f"question_{args.lvlm_pretrained}_{args.lvlm_model_name}_{args.dataset}.txt"
-    with open(output_path, "w") as f:
-        for o in outputs:
-            f.write(f"{o}\n")
+            final_decision, all_responses = agent.eval([img1, img2], args.num_samples)
+            
+            with open(os.path.join(index_dir, "decide.txt"), "w") as f:
+                f.write(f"{final_decision}\n")
+            
+            for j, question in enumerate(all_responses):
+                question_dir = os.path.join(index_dir, f"question_{j}")
+                os.makedirs(question_dir, exist_ok=True)
+                
+                for k, response in enumerate(all_responses[j]):
+                    response_path = os.path.join(question_dir, f"response_{k}.txt")
+                    with open(response_path, "w") as f:
+                        f.write(f"{response}\n")
 
 
 

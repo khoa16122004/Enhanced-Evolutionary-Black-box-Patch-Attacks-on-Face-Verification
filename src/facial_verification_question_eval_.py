@@ -88,7 +88,7 @@ def main_with_detailed_questions(args):
                     os.makedirs(index_dir, exist_ok=True)
                 
             final_decision, all_responses = agent.eval([img1, img2], args.num_samples)
-            
+            print("Final Decision: ", final_decision)
             with open(os.path.join(index_dir, "decide.txt"), "w") as f:
                 f.write(f"{final_decision}\n")
             

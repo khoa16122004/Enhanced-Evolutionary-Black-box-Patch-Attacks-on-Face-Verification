@@ -43,8 +43,8 @@ class AgentWithDetailedQuestions:
         )
         
         final_decision = self.lvlm.inference(
-            conclusion_prompt,
-            img_files=[], num_return_sequences=1,
+            conclusion_prompt + self.lvlm_image_token * 2,
+            img_files, num_return_sequences=1,
             do_sample=False, temperature=0.0, reload=False
         )
 

@@ -104,11 +104,11 @@ class AgentWithDetailedQuestions:
             all_responses.append(outputs)        
         
             # response_selecion
-            torch.cuda.empty_cache()
             selection_voting = f"You will receive a list of responses to a binary question. Your task is to synthesize a final answer based on the ideas that appear most frequently across the responses."
             prompt = f"Question: {question}\n Responses: {outputs}\n"
-            
+            torch.cuda.empty_cache()
             selection_response = self.llm.text_to_text(prompt, selection_voting)
+            torch.cuda.empty_cache()
             selection_responses.append(selection_response)
             
             
@@ -122,6 +122,7 @@ class AgentWithDetailedQuestions:
           "Here are the responses:"
           f"{selection_responses}"
         )
+        self.lvlm.reload()
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
             img_files, num_return_sequences=1,

@@ -58,12 +58,29 @@ def main_with_detailed_questions(args):
     output_dir = f"question_pretrained={args.lvlm_pretrained}_modelname={args.lvlm_model_name}_dataset={args.dataset}_num_samples={args.num_samples}"
     os.makedirs(output_dir, exist_ok=True)
     
+    
+    num_0 = 0
+    num_1 = 0
     with torch.no_grad():
-        for i in range(10, len(dataset)):    
+        for i in range(len(dataset)):    
+            
+            if num_0 == 10 and num_1 == 10:
+                break
+
+            
             index_dir = os.path.join(output_dir, str(i))
             os.makedirs(index_dir, exist_ok=True)
             
             img1, img2, label = dataset[i]
+            if label == 0:
+                num_0 += 1
+                if num_0 > 10:
+                    continue
+            else:
+                num_1 += 1
+                if num_1 > 10:
+                    continue
+                
             final_decision, all_responses = agent.eval([img1, img2], args.num_samples)
             
             with open(os.path.join(index_dir, "decide.txt"), "w") as f:

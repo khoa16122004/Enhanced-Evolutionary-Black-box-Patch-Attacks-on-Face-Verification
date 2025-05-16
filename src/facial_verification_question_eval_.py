@@ -166,6 +166,7 @@ def main_with_detailed_questions(args):
                 
             final_decision, all_responses, selection_responses = agent.eval([img1, img2], args.num_samples)
             print("Final Decision: ", final_decision)
+            print("All Responses: ", all_responses)
             print("Selection Decision: ", selection_responses)
             break
             # with open(os.path.join(index_dir, "decide.txt"), "w") as f:

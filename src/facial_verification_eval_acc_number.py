@@ -5,6 +5,10 @@ import torch
 from PIL import Image
 import re
 
+
+
+
+
 def main(args):
     dataset = get_dataset(args.dataset)
     with open(args.extracted_path, "r") as f:

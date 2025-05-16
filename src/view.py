@@ -4,7 +4,7 @@ from PIL import Image
 from dataset import get_dataset
 
 
-def load_example(index, input_dir, dataset_name):
+def load_example(index, input_dir, dataset_name, show_responses=False):
     dataset = get_dataset(dataset_name)
     img1, img2, label = dataset[index]
 
@@ -24,20 +24,38 @@ def load_example(index, input_dir, dataset_name):
 
     qa_list = []
     for i, question in enumerate(questions):
-        question_dir = os.path.join(index_dir, f"question_{i}")
-        responses = []
-
-        if os.path.exists(question_dir):
-            for response_file in sorted(os.listdir(question_dir)):
-                if response_file.startswith("response_"):
-                    response_path = os.path.join(question_dir, response_file)
-                    with open(response_path, "r") as f:
-                        response_text = f.read().strip()
-                    responses.append(f"{response_file}:\n{response_text}")
+        # Load selection
+        selection_path = os.path.join(index_dir, f"selection_{i}.txt")
+        if os.path.exists(selection_path):
+            with open(selection_path, "r") as f:
+                selection_text = f.read().strip()
         else:
-            responses.append("No responses found.")
+            selection_text = "Selection not found."
 
-        qa_list.append((question, "\n\n".join(responses)))
+        # Load responses (optional)
+        responses_text = ""
+        if show_responses:
+            question_dir = os.path.join(index_dir, f"question_{i}")
+            if os.path.exists(question_dir):
+                response_files = sorted(
+                    [f for f in os.listdir(question_dir) if f.startswith("response_")]
+                )
+                if response_files:
+                    for fname in response_files:
+                        fpath = os.path.join(question_dir, fname)
+                        with open(fpath, "r") as f:
+                            content = f.read().strip()
+                        responses_text += f"{fname}:\n{content}\n\n"
+                else:
+                    responses_text = "No responses found."
+            else:
+                responses_text = "No question directory found."
+
+            combined = f"{selection_text}\n\n---\n📋 Responses:\n{responses_text.strip()}"
+        else:
+            combined = selection_text
+
+        qa_list.append((question, combined))
 
     return img1, img2, str(label), decide_text, qa_list
 
@@ -50,6 +68,7 @@ def gradio_ui():
             index = gr.Number(label="Sample Index", value=0)
             input_dir = gr.Textbox(label="Input Directory", placeholder="Path to input dir")
             dataset_name = gr.Textbox(label="Dataset Name", placeholder="Dataset name used in get_dataset")
+            show_responses = gr.Checkbox(label="Show Responses", value=False)
             run_button = gr.Button("Load Example")
 
         with gr.Row():
@@ -61,14 +80,18 @@ def gradio_ui():
 
         qa_blocks = [gr.Markdown() for _ in range(5)]
 
-        def update_all(index, input_dir, dataset_name):
-            img1, img2, label, decide, qa_list = load_example(int(index), input_dir, dataset_name)
-            qa_texts = [f"### Q{i+1}: {q}\n\n```\n{a}\n```" for i, (q, a) in enumerate(qa_list)]
+        def update_all(index, input_dir, dataset_name, show_responses):
+            img1, img2, label, decide, qa_list = load_example(
+                int(index), input_dir, dataset_name, show_responses
+            )
+            qa_texts = [
+                f"### Q{i+1}: {q}\n\n```\n{a}\n```" for i, (q, a) in enumerate(qa_list)
+            ]
             return [img1, img2, label, decide] + qa_texts
 
         run_button.click(
             fn=update_all,
-            inputs=[index, input_dir, dataset_name],
+            inputs=[index, input_dir, dataset_name, show_responses],
             outputs=[img1_output, img2_output, label_output, decide_output] + qa_blocks
         )
 

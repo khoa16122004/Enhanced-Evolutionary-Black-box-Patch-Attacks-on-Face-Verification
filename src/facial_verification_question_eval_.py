@@ -103,7 +103,7 @@ class AgentWithDetailedQuestions:
             all_responses.append(outputs)        
         
             # response_selecion
-            selection_voting = f"You will receive a list of responses to a binary choice question. Your task is to synthesize a final answer based on the choices and ideas that appear most frequently across the responses in short ways"
+            selection_voting = f"You will receive a list of responses to a binary question. Your task is to synthesize a final answer based on the ideas that appear most frequently across the responses."
             prompt = f"Question: {question}\n Responses: {outputs}\n"
             
             selection_response = gptservice.text_to_text(prompt, selection_voting)

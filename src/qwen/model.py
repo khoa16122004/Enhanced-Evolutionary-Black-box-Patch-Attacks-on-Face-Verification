@@ -23,7 +23,7 @@ class QWENModel:
         
         self.model.generation_config = GenerationConfig.from_pretrained('Qwen/Qwen-7B-Chat', pad_token_id=self.tokenizer.pad_token_id)
     
-    def inference(self, prompts, system_prompt): 
+    def text_to_text(self, prompts, system_prompt): 
         """
             prompts: List['str']
             system_prompt: str

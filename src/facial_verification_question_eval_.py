@@ -8,6 +8,7 @@ from openai import OpenAI
 from typing import Optional
 import base64
 from typing import List
+from qwen.model import QWENModel
 
 dotenv.load_dotenv()
 class GPTService:
@@ -70,9 +71,10 @@ class GPTService:
             return "Error occurred during API call."
 
 class AgentWithDetailedQuestions:
-    def __init__(self, lvlm, lvlm_image_token):
+    def __init__(self, lvlm, lvlm_image_token, llm):
         self.lvlm = lvlm
         self.lvlm_image_token = lvlm_image_token
+        self.llm = llm
 
     def ask_question(self, img_files, question, num_samples=1, temperature=0.8):
         # Build prompt for the question
@@ -86,7 +88,6 @@ class AgentWithDetailedQuestions:
         return outputs
 
     def eval(self, img_files, num_samples=1, temperature=0.8):
-        gptservice = GPTService(model_name="gpt-4o")
         questions = [
             "Do the eyes of the two individuals have similar size and shape?",
             "Is there a noticeable difference in the nose length and width between the two individuals?",
@@ -106,7 +107,7 @@ class AgentWithDetailedQuestions:
             selection_voting = f"You will receive a list of responses to a binary question. Your task is to synthesize a final answer based on the ideas that appear most frequently across the responses."
             prompt = f"Question: {question}\n Responses: {outputs}\n"
             
-            selection_response = gptservice.text_to_text(prompt, selection_voting)
+            selection_response = self.llm.text_to_text(prompt, selection_voting)
             selection_responses.append(selection_response)
             
             
@@ -133,20 +134,22 @@ def main_with_detailed_questions(args):
     dataset = get_dataset(args.dataset)
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)
     
-    agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token)
-    output_dir = f"question_pretrained={args.lvlm_pretrained}_modelname={args.lvlm_model_name}_dataset={args.dataset}_num_samples={args.num_samples}"
+    if args.extract_llm == "qwen":
+        llm = QWENModel(args.lvlm_model_name)
+    elif args.extract_llm == "gpt4o":
+        llm = GPTService(model_name="gpt-4o")
+    
+    agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token, llm)
+    output_dir = f"question_pretrained={args.lvlm_pretrained}_modelname={args.lvlm_model_name}_dataset={args.dataset}_num_samples={args.num_samples}_llm={args.extract_llm}"
     os.makedirs(output_dir, exist_ok=True)
     num_0 = 0
     num_1 = 0
     with torch.no_grad():
-        for i in range(317, len(dataset)):    
+        for i in range(310, len(dataset)):    
             
             if num_0 > 10 and num_1 > 10:
                 break
 
-            
-           
-            
             img1, img2, label = dataset[i]
             if label == 0:
                 num_0 += 1
@@ -191,6 +194,7 @@ if __name__ == "__main__":
     parser.add_argument("--lvlm_model_name", type=str, default="llava_qwen")
     parser.add_argument("--dataset", type=str, default="lfw")
     parser.add_argument("--num_samples", type=int, default=10)
+    parser.add_argument("--extract_llm", type=str, default="qwen")
 
     args = parser.parse_args()
 

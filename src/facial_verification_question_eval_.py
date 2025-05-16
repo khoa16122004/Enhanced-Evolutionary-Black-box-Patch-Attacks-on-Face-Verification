@@ -58,10 +58,9 @@ def main_with_detailed_questions(args):
     output_dir = f"question_pretrained={args.lvlm_pretrained}_modelname={args.lvlm_model_name}_dataset={args.dataset}_num_samples={args.num_samples}"
     os.makedirs(output_dir, exist_ok=True)
     
-    
+    print("Khoa")
     with torch.no_grad():
         for i in range(len(dataset), 10):    
-            print("Khoa")
             index_dir = os.path.join(output_dir, str(i))
             os.makedirs(index_dir, exist_ok=True)
             

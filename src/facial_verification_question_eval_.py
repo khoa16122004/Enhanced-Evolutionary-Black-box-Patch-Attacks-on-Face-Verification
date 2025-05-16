@@ -127,6 +127,7 @@ class AgentWithDetailedQuestions:
             img_files, num_return_sequences=1,
             do_sample=True, temperature=0.8, reload=False
         )
+        print("Final Decision: ", final_decision)
 
         return final_decision[0], all_responses, selection_responses
 

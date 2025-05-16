@@ -135,7 +135,7 @@ def main_with_detailed_questions(args):
     lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model(args.lvlm_pretrained, args.lvlm_model_name)
     
     if args.extract_llm == "qwen":
-        llm = QWENModel(args.lvlm_model_name)
+        llm = QWENModel()
     elif args.extract_llm == "gpt4o":
         llm = GPTService(model_name="gpt-4o")
     

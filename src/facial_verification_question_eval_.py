@@ -20,7 +20,7 @@ class AgentWithDetailedQuestions:
         ]
 
         self.selection_voting = (
-            "You will receive a list of responses to a binary question. Your task is to synthesize a final answer "
+            "You will receive a list of responses to a binary question. Your task is to synthesize a final answer."
             "based on the ideas that appear most frequently across the responses."
         )
 
@@ -60,6 +60,7 @@ class AgentWithDetailedQuestions:
             selection_response = self.llm.text_to_text(self.selection_voting, prompt)
             selection_responses.append(selection_response)
 
+        print("selection responses: ", selection_responses)
         conclusion_prompt = self.conclusion_prompt_template.format(responses=selection_responses)
         # self.lvlm.reload()
         final_decision = self.lvlm.inference(

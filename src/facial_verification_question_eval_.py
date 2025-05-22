@@ -21,13 +21,7 @@ class AgentWithDetailedQuestions:
 
         self.selection_voting =(
             "You will receive several short responses to a binary question.",
-            "Your task is to summarize the majority opinion in a concise sentence, stating Yes or No followed by a brief reason based on the common points across the responses. Focus only on the main ideas.",
-            "Example Input:\n"
-            "response_0.txt: No, the mouths of the two individuals are not similar in terms of lip thickness and symmetry..."
-            "response_1.txt: The lips are not similar..."
-            "response_2.txt: The mouths are similar..."
-            "Example Output:"
-            "No – most responses note differences in lip thickness and symmetry."            
+            "Your task is to summarize the majority opinion in a concise sentence, stating Yes or No followed by a brief reason based on the common points across the responses. Focus only on the main ideas.",       
         )                    
 
 

@@ -65,4 +65,9 @@ class LlamaService:
                                       attention_mask=input_ids.attention_mask.to(self.model.device), 
                                       **self.generate_kwargs)
         decoded_outptus = self.tokenizer.batch_decode(outputs.sequences, skip_special_tokens=True)
+        
+        if isinstance(decoded_outptus, list):
+            return [o.split("Answer:")[-1].strip() for o in decoded_outptus]
+        else:
+            return decoded_outptus.split("Answer:")[-1].strip()
         return decoded_outptus

@@ -26,7 +26,7 @@ class AgentWithDetailedQuestions:
           "Assign greater weight to responses that mention differences in key biometric features (e.g., eye shape, jawline, nose structure)."
           "Based on the overall weighted vote, determine whether the images likely show the same person or not."
           "Here are the responses:"
-          "{}"
+          "{responses}"
         )
 
     def ask_question(self, img_files, question, num_samples=1, temperature=0.8):

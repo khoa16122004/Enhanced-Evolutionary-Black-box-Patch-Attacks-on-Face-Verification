@@ -19,16 +19,14 @@ class AgentWithDetailedQuestions:
             "Do the individuals have similar eyebrow shapes, density, or gaps between brows?"
         ]
 
-        self.selection_voting = (
-            "You will receive a list of responses to a binary question. Your task is to synthesize a final answer."
-            "based on the ideas that appear most frequently across the responses."
-        )
+        self.selection_voting ="You will receive a list of responses to a binary question. Your task is to synthesize a final answer based on the ideas that appear most frequently across the responses."
 
         self.conclusion_prompt_template = (
-            "Given the responses describing facial features in two images, treat each response as a 'vote' indicating "
-            "whether the images depict the same person or different individuals. Assign greater weight to responses "
-            "that mention differences in key biometric features (e.g., eye shape, jawline, nose structure). Based on "
-            "the overall weighted vote, determine whether the images likely show the same person or not. Here are the responses: {responses}"
+          "Given the responses describing facial features in two images, treat each response as a 'vote' indicating whether the images depict the same person or different individuals."
+          "Assign greater weight to responses that mention differences in key biometric features (e.g., eye shape, jawline, nose structure)."
+          "Based on the overall weighted vote, determine whether the images likely show the same person or not."
+          "Here are the responses:"
+          "{}"
         )
 
     def ask_question(self, img_files, question, num_samples=1, temperature=0.8):

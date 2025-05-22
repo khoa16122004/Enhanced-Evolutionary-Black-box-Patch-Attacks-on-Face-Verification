@@ -44,7 +44,7 @@ class LlamaService:
         self.tokenizer = tokenizer_cls.from_pretrained(os.path.join(prefix, hf_name))
         self.tokenizer.pad_token = self.tokenizer.eos_token
         self.generate_kwargs = dict(
-            max_new_tokens=128,
+            max_new_tokens=512,
             return_dict_in_generate=True,
             output_hidden_states=True,
             output_scores=True,

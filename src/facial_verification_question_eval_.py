@@ -19,7 +19,18 @@ class AgentWithDetailedQuestions:
             "Do the individuals have similar eyebrow shapes, density, or gaps between brows?"
         ]
 
-        self.selection_voting ="You will receive a list of responses to a binary question. Your task is to synthesize a final answer based on the ideas that appear most frequently across the responses."
+        self.selection_voting =(
+            "You will receive several short responses to a binary question.",
+            "Your task is to summarize the majority opinion in a concise sentence, stating Yes or No followed by a brief reason based on the common points across the responses. Focus only on the main ideas.",
+            "Example Input:\n"
+            "response_0.txt: No, the mouths of the two individuals are not similar in terms of lip thickness and symmetry..."
+            "response_1.txt: The lips are not similar..."
+            "response_2.txt: The mouths are similar..."
+            "Example Output:"
+            "No – most responses note differences in lip thickness and symmetry."            
+        )                    
+
+
 
         self.conclusion_prompt_template = (
           "Given the responses describing facial features in two images, treat each response as a 'vote' indicating whether the images depict the same person or different individuals."

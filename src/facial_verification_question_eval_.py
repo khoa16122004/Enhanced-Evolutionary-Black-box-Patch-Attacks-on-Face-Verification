@@ -57,7 +57,7 @@ class AgentWithDetailedQuestions:
             # voting for each question
             prompt = f"Question: {question}\n Responses: {outputs}\n"
             print("Prompt: ", prompt)
-            selection_response = self.llm.text_to_text(prompt, self.selection_voting)
+            selection_response = self.llm.text_to_text(self.selection_voting, prompt)
             selection_responses.append(selection_response)
 
         conclusion_prompt = self.conclusion_prompt_template.format(responses=selection_responses)

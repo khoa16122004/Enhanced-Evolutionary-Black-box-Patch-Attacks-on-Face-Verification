@@ -70,4 +70,3 @@ class LlamaService:
             return [o.split("Answer:")[-1].strip() for o in decoded_outptus]
         else:
             return decoded_outptus.split("Answer:")[-1].strip()
-        return decoded_outptus

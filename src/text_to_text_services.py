@@ -57,10 +57,10 @@ class LlamaService:
             self.tokenizer.padding_side = "left"
 
     def text_to_text(self, system_prompt, prompt):
-        inputs = f"{system_prompt}\n{prompt}"
+        inputs = f"[INST]{system_prompt}[/INST]\n{prompt}"
         input_ids = self.tokenizer(inputs, 
                                    return_tensors="pt", 
-                                   padding=True, truncation=True).input_ids.cuda()
+                                   padding=True, truncation=True)
         outputs = self.model.generate(input_ids=input_ids.input_ids.to(self.model.device), 
                                       attention_mask=input_ids.attention_mask.to(self.model.device), 
                                       **self.generate_kwargs)

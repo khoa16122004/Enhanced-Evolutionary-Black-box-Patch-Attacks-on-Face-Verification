@@ -57,7 +57,7 @@ class LlamaService:
             self.tokenizer.padding_side = "left"
 
     def text_to_text(self, system_prompt, prompt):
-        inputs = f"[INST]{system_prompt}[/INST]\n{prompt}"
+        inputs = f"[INST]{system_prompt}/n{prompt}[/INST]Answers: "
         input_ids = self.tokenizer(inputs, 
                                    return_tensors="pt", 
                                    padding=True, truncation=True)

@@ -61,7 +61,7 @@ class AgentWithDetailedQuestions:
             selection_responses.append(selection_response)
 
         conclusion_prompt = self.conclusion_prompt_template.format(responses=selection_responses)
-        self.lvlm.reload()
+        # self.lvlm.reload()
         final_decision = self.lvlm.inference(
             conclusion_prompt + self.lvlm_image_token * 2,
             img_files, num_return_sequences=1,

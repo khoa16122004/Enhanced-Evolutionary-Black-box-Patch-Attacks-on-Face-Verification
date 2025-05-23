@@ -38,7 +38,7 @@ class AgentWithDetailedQuestions:
 
     def ask_question(self, img_files, question, num_samples=1, temperature=0.8):
         prompt = f"{question}\nImages: {self.lvlm_image_token * 2}"
-        print("Prompt ask question: ", prompt)
+        # print("Prompt ask question: ", prompt)
         outputs = self.lvlm.inference(
             prompt, img_files,
             num_return_sequences=num_samples, do_sample=True,
@@ -55,17 +55,17 @@ class AgentWithDetailedQuestions:
             
             # output from each question
             outputs = self.ask_question(img_files, question, num_samples, temperature)
-            print("Outputs: ", outputs)
+            # print("Outputs: ", outputs)
             all_responses.append(outputs)
 
 
             # voting for each question
             prompt = f"Question: {question}\n Responses: {outputs}\n"
-            print("Prompt: ", prompt)
+            # print("Prompt: ", prompt)
             selection_response = self.llm.text_to_text(self.selection_voting, prompt)
             selection_responses.append(selection_response)
 
-        print("selection responses: ", selection_responses)
+        # print("selection responses: ", selection_responses)
         conclusion_prompt = self.conclusion_prompt_template.format(responses=selection_responses)
         # self.lvlm.reload()
         final_decision = self.lvlm.inference(

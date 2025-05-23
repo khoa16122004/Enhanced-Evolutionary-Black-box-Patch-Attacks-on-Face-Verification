@@ -22,7 +22,7 @@ class AgentWithDetailedQuestions:
         self.selection_voting =(
             "You will receive several short responses to a binary question.",
             "Your task is to summarize the majority opinion in a concise sentence, followed by a brief reason based on the common points across the responses. Focus only on the main ideas.",
-            "Just answer the question and reason in a few words, without any additional details."       
+            "Just answer the question in a few words, without any additional details."       
         )                    
 
 

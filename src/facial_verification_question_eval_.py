@@ -95,24 +95,15 @@ def main_with_detailed_questions(args):
     num_1 = 0
     with torch.no_grad():
         for i in tqdm(range(len(dataset))):    
-            if num_0 > 10 and num_1 > 10:
-                break
+
 
             img1, img2, label = dataset[i]
-            if label == 0:
-                num_0 += 1
-                if num_0 > 10:
-                    continue
-                else:
-                    index_dir = os.path.join(output_dir, str(i))
-                    os.makedirs(index_dir, exist_ok=True)
-            else:
-                num_1 += 1
-                if num_1 > 10:
-                    continue
-                else:
-                    index_dir = os.path.join(output_dir, str(i))
-                    os.makedirs(index_dir, exist_ok=True)
+
+            index_dir = os.path.join(output_dir, str(i))
+            os.makedirs(index_dir, exist_ok=True)
+
+            index_dir = os.path.join(output_dir, str(i))
+            os.makedirs(index_dir, exist_ok=True)
                 
             final_decision, all_responses, selection_responses = agent.eval([img1, img2], args.num_samples)
 

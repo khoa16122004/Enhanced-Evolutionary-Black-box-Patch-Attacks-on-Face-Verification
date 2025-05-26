@@ -32,7 +32,7 @@ def main(args):
         file_path = os.path.join(args.extract_dir, str(i), "decide.txt")
         with open(file_path, "r") as f:
             pred = f.read().strip()
-        output = llm.text_to_text(system_prompt, pred)
+        output = llm.text_to_text(system_prompt, pred)[0]
         print("Output: ", output)
         match = re.search(r'\b(same|different)\b', output.strip().lower())
         if match:

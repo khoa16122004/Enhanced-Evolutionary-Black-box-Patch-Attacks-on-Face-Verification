@@ -41,7 +41,7 @@ def main(args):
             print("error: ", pred)
             results.append("error")
             
-        break
+        # break
     with open(f"results_{args.extract_llm}_{args.extract_dir}.txt", "w") as f:
         for result in results:
             f.write(result + "\n")

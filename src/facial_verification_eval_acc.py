@@ -98,50 +98,48 @@ def parse_response(response):
     output = client.text_to_text(system_prompt, response)
     return output.strip().lower()
     
+from sklearn.metrics import f1_score
+
 def main(args):
     dataset = get_dataset(args.dataset)
     with open(args.extracted_path, "r") as f:
         responses = [line.strip() for line in f.readlines()]
-            
 
-    
-    acc_0 = 0
-    acc_1 = 0 
-    num_0 = 0
-    num_1 = 0   
-    avg_acc = 0
+    acc_0 = acc_1 = num_0 = num_1 = avg_acc = 0
+    y_true = []
+    y_pred = []
+
     print("Len: ", len(responses))
     for i in range(len(dataset)):
         img1, img2, label = dataset[i]
-        # print(i)
         pred = responses[i]
-        print("Pred: ", pred)
-
         pred = parse_response(pred)
+
         if pred.lower() not in ['different', 'same']:
             print("error: ", pred)
+            continue
+
+        y_true.append(label)
+        y_pred.append(0 if pred.lower() == 'same' else 1)
+
+        if label == 0:
+            num_0 += 1
+            if pred.lower() == 'same':
+                acc_0 += 1
+                avg_acc += 1
         else:
-            if label == 0:
-                num_0 += 1
-                if pred.lower() == 'same':
-                    acc_0 += 1
-                    avg_acc += 1
-                    
-                    
-                
-            else:
-                num_1 += 1
-                if pred.lower() == 'different':
-                    acc_1 += 1
-                    avg_acc += 1
-                # else:
-                #     print(i)
-                    
+            num_1 += 1
+            if pred.lower() == 'different':
+                acc_1 += 1
+                avg_acc += 1
 
     print("num_0: ", num_0)
     print("num_1: ", num_1)
-    print(f"acc_0: {acc_0/num_0}, acc_1: {acc_1/num_1}, avg_acc: {avg_acc/len(responses)}")
-        
+    print(f"acc_0: {acc_0/num_0:.4f}, acc_1: {acc_1/num_1:.4f}, avg_acc: {avg_acc/len(y_true):.4f}")
+
+    f1 = f1_score(y_true, y_pred, average='macro')
+    print(f"Macro F1 score: {f1:.4f}")
+
 
 
 

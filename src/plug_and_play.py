@@ -11,6 +11,9 @@ img_files = [
     Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg").convert("RGB")
 ]
 
+img_files[0].save("test1.png")
+img_files[1].save("test2.png")
+
 initial_question = "Describe extremely the person."
 
 llm_system_prompt = """

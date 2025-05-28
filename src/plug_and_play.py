@@ -14,104 +14,98 @@ img_files = [
 img_files[0].save("test1.png")
 img_files[1].save("test2.png")
 
-initial_question = "Describe extremely the person."
+initial_question = "Look at both images. Describe the key facial features you can observe in each image."
 
 llm_system_prompt = """
-🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
+🎮 DETECTIVE CHALLENGE: Determine if two faces show the same person using strategic questions!
 
-🕵️ Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - but each witness only sees ONE image and doesn't know what the other witness sees.
+🕵️ Your Mission: You're a master detective analyzing two face images. A Vision AI will examine BOTH images simultaneously and answer your questions about what it observes.
 
 🎯 GAME RULES:
-- Ask questions about specific features for two witnesses
-- Each witness will only describe their own image
+- Ask strategic questions about features visible in both images
+- The Vision AI can see and compare both images directly
 - Each question costs points - fewer questions = higher score!
-- Compare the two answers yourself to find similarities/differences
-- When you're confident about your conclusion, respond with "None"
-- Don't ask the question that reveal there are two witnesses. 
+- Analyze the responses to determine if it's the same person or different people
+- When you're confident about your conclusion, respond with "CONCLUSION"
+- Focus on distinguishing facial features, expressions, angles, lighting, etc.
 
+⚠️ STRATEGY TIPS: 
+- Ask about specific, measurable features (eye color, nose shape, facial structure, etc.)
+- Consider lighting differences, angles, and image quality
+- Look for unique identifying features (scars, moles, distinctive shapes)
+- Don't just ask "are they the same person" - gather evidence first!
 
-⚠️ IMPORTANT: 
-- DON'T ask comparative questions like "Are they similar?"
-- Each witness only knows about their own image
-- Ask about ONE specific feature that both can describe independently
-
-⚡ Only return your next strategic question. Nothing else. If you have enough evidence, return "None".
+⚡ Only return your next strategic question. Nothing else. If you have enough evidence to make a final determination, return "CONCLUSION".
 
 What's your next detective question?
 """
 
-llm_prompt_template = "History:\n{history}"
+llm_prompt_template = "Investigation History:\n{history}\n\nWhat's your next strategic question to solve this case?"
 
 history = []
 question = initial_question
 max_rounds = 10
 
 for round_idx in range(max_rounds):
-    # Ask the question to the first image
-    answer_1 = lvlm_model.inference(
-        question + lvlm_image_token,
-        [img_files[0]],  # Pass as list for consistency
+    # Ask the question about BOTH images simultaneously
+    vision_response = lvlm_model.inference(
+        question + f" {lvlm_image_token} {lvlm_image_token}",  # Two image tokens for both images
+        img_files,  # Pass both images
         num_return_sequences=1,
         do_sample=True,
         temperature=0.8,
         reload=False
     )[0]
     
-    # Ask the same question to the second image  
-    answer_2 = lvlm_model.inference(
-        question + lvlm_image_token,
-        [img_files[1]],  # Pass as list for consistency
-        num_return_sequences=1,
-        do_sample=True,
-        temperature=0.8,
-        reload=False
-    )[0]
+    # Store the question and response in history
+    history.append((question, vision_response))
 
-    # Store both answers in history
-    history.append((question, answer_1, answer_2))
-
-    # Format history for LLM - include both answers for comparison
+    # Format history for LLM
     formatted_history = ""
-    for q, a1, a2 in history:
-        formatted_history += f"Q: {q}\nImage 1 Answer: {a1}\nImage 2 Answer: {a2}\n\n"
+    for i, (q, response) in enumerate(history, 1):
+        formatted_history += f"Round {i}\nQ: {q}\nVision AI Response: {response}\n\n"
 
-    # Generate next question based on both answers
+    # Generate next question based on the response
     next_question = llm.text_to_text(llm_system_prompt, llm_prompt_template.format(history=formatted_history))[0]
 
-    print(f"\n🎮 Game Round {round_idx + 1}")
+    print(f"\n🎮 Detective Round {round_idx + 1}")
     print(f"🕵️ Detective Question: {question}")
-    print(f"👤 Vision AI #1 (Image 1): {answer_1}")
-    print(f"👤 Vision AI #2 (Image 2): {answer_2}")
-    print(f"🤔 Detective's Next Strategy: {next_question}")
+    print(f"👁️ Vision AI Analysis: {vision_response}")
+    print(f"🤔 Detective's Next Move: {next_question}")
 
-    if "None" in next_question or "none" in next_question.lower():
-        print("\n🎯 GAME OVER! Detective has reached a conclusion!")
+    if "CONCLUSION" in next_question.upper():
+        print("\n🎯 REACHING FINAL CONCLUSION!")
         
-        # Final summary with all Q&A pairs
-        final_summary_prompt = f"""
-The guessing game is over! As the detective, you've been asking questions to two Vision AI assistants about two different images.
+        # Final analysis prompt
+        final_analysis_prompt = f"""
+Time for your final detective conclusion! You've been investigating whether two face images show the same person or different people.
 
-Here's your complete investigation history:
+Here's your complete investigation:
 {formatted_history}
 
-Now it's time for your final verdict! Please provide:
+Based on all the evidence gathered, provide your final analysis:
 
-🎯 FINAL GUESS: Are these the SAME PERSON or DIFFERENT PEOPLE?
+🎯 FINAL VERDICT: Are these the SAME PERSON or DIFFERENT PEOPLE?
 
-🔍 DETECTIVE REASONING: What key evidence led to your conclusion? Explain your logical deduction process.
+🔍 KEY EVIDENCE: What specific features and observations led to your conclusion?
 
-📊 CONFIDENCE LEVEL: How confident are you? (High/Medium/Low)
+📊 CONFIDENCE LEVEL: How confident are you in this determination? (High/Medium/Low)
 
-🎮 GAME SUMMARY: Briefly summarize the most important clues that solved the case.
+🎮 DETECTIVE SUMMARY: What were the most crucial clues that solved this case?
+
+⚖️ REASONING: Explain your logical deduction process step by step.
 """
-        final_summary = llm.text_to_text("", final_summary_prompt)[0]
+        
+        final_verdict = llm.text_to_text("", final_analysis_prompt)[0]
         print("\n🏆 DETECTIVE'S FINAL VERDICT:")
-        print(final_summary)
+        print(final_verdict)
         break
 
     question = next_question
-    input("Press Enter to continue to the next round...")
+    input("Press Enter to continue to next round...")
 
-print("\n🎮 GAME COMPLETED!")
-print(f"🔢 Total Investigation Rounds: {len(history)}")
-print(f"🕵️ Questions Asked: {[q for q, _, _ in history]}")
+print("\n🎮 INVESTIGATION COMPLETED!")
+print(f"🔢 Total Rounds: {len(history)}")
+print(f"📝 Questions Asked: {len(history)}")
+for i, (q, _) in enumerate(history, 1):
+    print(f"   {i}. {q}")

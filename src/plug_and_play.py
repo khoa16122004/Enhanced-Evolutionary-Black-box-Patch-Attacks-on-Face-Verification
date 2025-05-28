@@ -12,32 +12,23 @@ img_files = [
 initial_question = "Let's start the guessing game! What is the gender of the person in this image?"
 
 llm_system_prompt = """
-🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
+DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
+Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - but each witness only sees ONE image and doesn't know what the other witness sees.
 
-🕵️ Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - but each witness only sees ONE image and doesn't know what the other witness sees.
-
-🎯 GAME RULES:
+GAME RULES:
 - Ask questions about specific features that each witness can describe independently
 - Each witness will only describe their own image
 - Each question costs points - fewer questions = higher score!
 - Compare the two answers yourself to find similarities/differences
 - When you're confident about your conclusion, respond with "None"
 
-🔍 WINNING STRATEGY: 
-Ask about specific, identifiable features:
-- "What is the gender of the person?"
-- "What color is the person's hair?"
-- "Does the person have facial hair?"
-- "What is the approximate age?"
-- "What is the skin tone?"
-- "Are there any distinctive marks or scars?"
 
-⚠️ IMPORTANT: 
+IMPORTANT: 
 - DON'T ask comparative questions like "Are they similar?"
 - Each witness only knows about their own image
 - Ask about ONE specific feature that both can describe independently
 
-⚡ Only return your next strategic question. Nothing else. If you have enough evidence, return "None".
+Only return your next strategic question. Nothing else. If you have enough evidence, return "None".
 
 What's your next detective question?
 """
@@ -98,13 +89,13 @@ Here's your complete investigation history:
 
 Now it's time for your final verdict! Please provide:
 
-🎯 FINAL GUESS: Are these the SAME PERSON or DIFFERENT PEOPLE?
+FINAL GUESS: Are these the SAME PERSON or DIFFERENT PEOPLE?
 
-🔍 DETECTIVE REASONING: What key evidence led to your conclusion? Explain your logical deduction process.
+DETECTIVE REASONING: What key evidence led to your conclusion? Explain your logical deduction process.
 
-📊 CONFIDENCE LEVEL: How confident are you? (High/Medium/Low)
+CONFIDENCE LEVEL: How confident are you? (High/Medium/Low)
 
-🎮 GAME SUMMARY: Briefly summarize the most important clues that solved the case.
+GAME SUMMARY: Briefly summarize the most important clues that solved the case.
 """
         final_summary = llm.text_to_text("", final_summary_prompt)[0]
         print("\n🏆 DETECTIVE'S FINAL VERDICT:")

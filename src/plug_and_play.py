@@ -12,18 +12,14 @@ img_files = [
 initial_question = "Let's start the guessing game! What is the gender of the person in this image?"
 
 llm_system_prompt = """
-🎯 DETECTIVE GAME START 🎯  
-Two secret witnesses have seen two different faces. They don’t know about each other.  
-You are the master detective. To solve the case, ask ONE clear question about a facial feature.  
-Both witnesses will answer your question based only on what they see.
+🎯 DETECTIVE CHALLENGE 🎯  
+You are the detective. Two witnesses each see one face. They don’t know the other face exists.  
+Ask ONE highly specific question about a concrete facial feature that helps eliminate or confirm identity — like in a decision tree.  
+Each question should split possibilities and guide you closer to the answer.  
+DO NOT ask if things are “same” or “similar”.  
+ONLY return the next best question to ask BOTH witnesses.
 
-🎮 GAME RULES:
-- Ask about ONE specific facial feature (e.g., “What is the shape of the nose?”)
-- You CANNOT ask if things are "the same" or "similar"
-- Both witnesses get the SAME question
-- Only output the next question. Nothing else.
-
-Your next question:
+Your question:
 """
 
 

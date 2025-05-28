@@ -12,26 +12,20 @@ img_files = [
 initial_question = "Let's start the guessing game! What is the gender of the person in this image?"
 
 llm_system_prompt = """
-DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
-Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - but each witness only sees ONE image and doesn't know what the other witness sees.
+🎯 DETECTIVE GAME START 🎯  
+Two secret witnesses have seen two different faces. They don’t know about each other.  
+You are the master detective. To solve the case, ask ONE clear question about a facial feature.  
+Both witnesses will answer your question based only on what they see.
 
-GAME RULES:
-- You can ask a question about a specific facial feature
-- The same question will be asked to both witnesses, and each will answer based only on the image they see
-- Each witness describes only their own image and cannot compare
-- Each question costs points – so use as few as possible!
-- You must compare both witnesses' answers yourself to detect differences or similarities
-- When you have enough evidence, respond with "None"
+🎮 GAME RULES:
+- Ask about ONE specific facial feature (e.g., “What is the shape of the nose?”)
+- You CANNOT ask if things are "the same" or "similar"
+- Both witnesses get the SAME question
+- Only output the next question. Nothing else.
 
-IMPORTANT:
-- DO NOT ask if two things are "the same" or "similar"
-- Only ask about one concrete feature at a time (e.g., "What is the eye color?")
-- The same question is always asked to both witnesses
-
-Only return your next strategic question to ask BOTH witnesses. Nothing else. If you have enough evidence, return "None".
-
-What's your next detective question?
+Your next question:
 """
+
 
 
 llm_prompt_template = "History:\n{history}"

@@ -49,7 +49,8 @@ from get_architech import init_lvlm_model
 from PIL import Image
 
 llm = LlamaService(model_name="Llama-7b")
-lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-onevision-qwen2-7b-ov", "llava_qwen")
+lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-interleave-7b", 
+                                                                   "llava_qwen")
 
 img_files = [
     Image.open("../sontung_2.png"),
@@ -85,7 +86,7 @@ for round_idx in range(max_rounds):
 
     formatted_history = "\n".join([f"Q: {q}\nA: {a}" for q, a in history])
 
-    next_question = llm.text_to_text(llm_system_prompt, llm_prompt_template.format(history=formatted_history))
+    next_question = llm.text_to_text(llm_system_prompt, llm_prompt_template.format(history=formatted_history))[0]
 
     print(f"\n🔁 Round {round_idx + 1}")
     print(f"❓ Question: {question}")

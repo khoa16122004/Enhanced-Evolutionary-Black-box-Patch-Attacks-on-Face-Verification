@@ -53,7 +53,7 @@ lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-onevis
 
 img_files = [
     Image.open("../sontung_2.png"),
-    Image.open("../sontung_1.png")
+    Image.open("../sontung.jpg")
 ]
 
 initial_question = "Do these two facial images belong to the same person? Please explain your reasoning."

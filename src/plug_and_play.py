@@ -6,8 +6,8 @@ llm = LlamaService(model_name="Llama-7b")
 lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-interleave-7b", 
                                                                    "llava_qwen")
 img_files = [
-    Image.open("../lfw_dataset/lfw_crop_margin_5/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB"),
-    Image.open("../lfw_dataset/lfw_crop_margin_5/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB")
+    Image.open("../lfw_dataset/lfw_original/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB"),
+    Image.open("../lfw_dataset/lfw_original/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB")
 ]
 initial_question = "Let's start the guessing game! What is the gender of the person in this image?"
 
@@ -16,22 +16,23 @@ DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST que
 Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - but each witness only sees ONE image and doesn't know what the other witness sees.
 
 GAME RULES:
-- Ask questions about specific features that each witness can describe independently
-- Each witness will only describe their own image
-- Each question costs points - fewer questions = higher score!
-- Compare the two answers yourself to find similarities/differences
-- When you're confident about your conclusion, respond with "None"
+- You can ask a question about a specific facial feature
+- The same question will be asked to both witnesses, and each will answer based only on the image they see
+- Each witness describes only their own image and cannot compare
+- Each question costs points – so use as few as possible!
+- You must compare both witnesses' answers yourself to detect differences or similarities
+- When you have enough evidence, respond with "None"
 
+IMPORTANT:
+- DO NOT ask if two things are "the same" or "similar"
+- Only ask about one concrete feature at a time (e.g., "What is the eye color?")
+- The same question is always asked to both witnesses
 
-IMPORTANT: 
-- DON'T ask comparative questions like "Are they similar?"
-- Each witness only knows about their own image
-- Ask about ONE specific feature that both can describe independently
-
-Only return your next strategic question. Nothing else. If you have enough evidence, return "None".
+Only return your next strategic question to ask BOTH witnesses. Nothing else. If you have enough evidence, return "None".
 
 What's your next detective question?
 """
+
 
 llm_prompt_template = "History:\n{history}"
 

@@ -11,14 +11,28 @@ img_files = [
     Image.open("../lfw_dataset/lfw_crop_margin_5/Ziwang_Xu/Ziwang_Xu_0001.jpg")
 ]
 
-initial_question = "What is the gender?"
+initial_question = "Let's start the guessing game! What is the gender of the person in this image?"
 
 llm_system_prompt = """
-You are analyzing whether two facial images belong to the same person.
-You have received the following Q&A history where each question was asked to both images separately.
-Based on the previous answers from both images, please propose a follow-up question that explores the comparison in more detail.
-Focus on features that could help determine if these are the same person.
-If enough information has been gathered, please respond with "None".
+You are playing a guessing game! Your goal is to determine if two facial images show the same person or different people.
+
+Here's the twist - you CANNOT see the images yourself. You can only ask questions, and two Vision AI assistants will look at each image separately and answer your questions.
+
+Game Rules:
+- Ask strategic questions about facial features, appearance, or characteristics
+- You'll receive two separate answers (one for each image)
+- Use the answers to guide your next question
+- Keep asking until you're confident about your guess
+- When you have enough information to make a decision, respond with "None"
+
+Think like a detective! Look for similarities and differences in the answers. Ask about:
+- Physical features (eyes, nose, mouth, face shape)
+- Age, gender, ethnicity
+- Distinctive marks, accessories, expressions
+- Hair style, facial hair
+- Any unique characteristics
+
+Based on the Q&A history, what's your next strategic question to solve this mystery?
 """
 
 llm_prompt_template = "History:\n{history}"
@@ -59,35 +73,40 @@ for round_idx in range(max_rounds):
     # Generate next question based on both answers
     next_question = llm.text_to_text(llm_system_prompt, llm_prompt_template.format(history=formatted_history))[0]
 
-    print(f"\n🔁 Round {round_idx + 1}")
-    print(f"❓ Question: {question}")
-    print(f"✅ Image 1 Answer: {answer_1}")
-    print(f"✅ Image 2 Answer: {answer_2}")
-    print(f"🤔 Next Question Generated: {next_question}")
+    print(f"\n🎮 Game Round {round_idx + 1}")
+    print(f"🕵️ Detective Question: {question}")
+    print(f"👤 Vision AI #1 (Image 1): {answer_1}")
+    print(f"👤 Vision AI #2 (Image 2): {answer_2}")
+    print(f"🤔 Detective's Next Strategy: {next_question}")
 
     if "None" in next_question or "none" in next_question.lower():
-        print("\n🛑 LLM indicates sufficient information gathered.")
+        print("\n🎯 GAME OVER! Detective has reached a conclusion!")
         
         # Final summary with all Q&A pairs
         final_summary_prompt = f"""
-Based on the following Q&A history, please summarize the reasoning and conclude whether the two faces belong to the same person or not. Be clear and concise.
+The guessing game is over! As the detective, you've been asking questions to two Vision AI assistants about two different images.
 
-Analysis History:
+Here's your complete investigation history:
 {formatted_history}
 
-Please provide:
-1. A clear conclusion (SAME PERSON or DIFFERENT PERSONS)
-2. Key evidence supporting your decision
-3. Confidence level (High/Medium/Low)
+Now it's time for your final verdict! Please provide:
+
+🎯 FINAL GUESS: Are these the SAME PERSON or DIFFERENT PEOPLE?
+
+🔍 DETECTIVE REASONING: What key evidence led to your conclusion? Explain your logical deduction process.
+
+📊 CONFIDENCE LEVEL: How confident are you? (High/Medium/Low)
+
+🎮 GAME SUMMARY: Briefly summarize the most important clues that solved the case.
 """
         final_summary = llm.text_to_text("", final_summary_prompt)[0]
-        print("\n📌 Final Conclusion:")
+        print("\n🏆 DETECTIVE'S FINAL VERDICT:")
         print(final_summary)
         break
 
     question = next_question
     input("Press Enter to continue to the next round...")
 
-print("\n✅ Analysis completed!")
-print(f"Total rounds: {len(history)}")
-print(f"Questions asked: {[q for q, _, _ in history]}")
+print("\n🎮 GAME COMPLETED!")
+print(f"🔢 Total Investigation Rounds: {len(history)}")
+print(f"🕵️ Questions Asked: {[q for q, _, _ in history]}")

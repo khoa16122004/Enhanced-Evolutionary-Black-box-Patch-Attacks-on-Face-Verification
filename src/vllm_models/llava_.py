@@ -62,3 +62,23 @@ class LLava:
         text_outputs = self.tokenizer.batch_decode(cont, skip_special_tokens=True)
         outputs = text_outputs
         return outputs
+    
+    def get_image_embedding(self, img_files):
+        image_tensors = process_images(img_files, self.image_processor, self.model.config)
+        image_tensors = [_image.to(dtype=torch.float16, device=self.device) for _image in image_tensors]
+        with torch.inference_mode():
+            image_embeddings = self.model.encode_images(image_tensors)  # (B, D)
+            image_embeddings = F.normalize(image_embeddings, dim=-1)
+        return image_embeddings
+
+    def get_text_embedding(self, text):
+        input_ids = self.tokenizer(text, return_tensors="pt").input_ids.to(self.device)
+        with torch.inference_mode():
+            embeddings = self.model.model.embed_tokens(input_ids)  # (1, seq_len, dim)
+            pooled = embeddings.mean(dim=1)  # mean pooling
+            pooled = F.normalize(pooled, dim=-1)
+        return pooled  # (1, dim)
+
+    def get_similarity(self, image_embedding, text_embedding):
+        sim = torch.matmul(image_embedding, text_embedding.T)  # (B, 1)
+        return sim.squeeze()  # trả về tensor 1 chiều (B,)

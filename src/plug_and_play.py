@@ -14,25 +14,26 @@ img_files = [
 initial_question = "Let's start the guessing game! What is the gender of the person in this image?"
 
 llm_system_prompt = """
-You are playing a guessing game! Your goal is to determine if two facial images show the same person or different people.
+🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
 
-Here's the twist - you CANNOT see the images yourself. You can only ask questions, and two Vision AI assistants will look at each image separately and answer your questions.
+🕵️ Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - one for each image.
 
-Game Rules:
-- Ask strategic questions about facial features, appearance, or characteristics
-- You'll receive two separate answers (one for each image)
-- Use the answers to guide your next question
-- Keep asking until you're confident about your guess
-- When you have enough information to make a decision, respond with "None"
+🎯 GAME RULES:
+- Ask the most strategic questions to solve the case quickly
+- Each question costs points - fewer questions = higher score!
+- Look for key differences or similarities in the witness answers
+- When you're confident about your conclusion, respond with "None"
 
-Think like a detective! Look for similarities and differences in the answers. Ask about:
-- Physical features (eyes, nose, mouth, face shape)
-- Age, gender, ethnicity
-- Distinctive marks, accessories, expressions
-- Hair style, facial hair
-- Any unique characteristics
+🔍 WINNING STRATEGY: 
+Ask about the most distinctive features first:
+- Gender, age range, ethnicity
+- Unique facial features (scars, moles, distinctive nose/eyes)
+- Hair color/style, facial hair
+- Face shape, skin tone
 
-Based on the Q&A history, what's your next strategic question to solve this mystery?
+⚡ IMPORTANT: Only return your next strategic question. Nothing else. If you have enough evidence to decide, return "None".
+
+What's your next detective question?
 """
 
 llm_prompt_template = "History:\n{history}"

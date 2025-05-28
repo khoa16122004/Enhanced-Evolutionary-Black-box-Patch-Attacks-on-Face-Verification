@@ -52,8 +52,8 @@ llm = LlamaService(model_name="Llama-7b")
 lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-onevision-qwen2-7b-ov", "llava_qwen")
 
 img_files = [
-    Image.open("D:/Enhanced-Evolutionary-Black-box-Patch-Attacks-on-Face-Verification/sontung_2.png"),
-    Image.open("D:/Enhanced-Evolutionary-Black-box-Patch-Attacks-on-Face-Verification/sontung_1.png")
+    Image.open("../sontung_2.png"),
+    Image.open("../sontung_1.png")
 ]
 
 initial_question = "Do these two facial images belong to the same person? Please explain your reasoning."

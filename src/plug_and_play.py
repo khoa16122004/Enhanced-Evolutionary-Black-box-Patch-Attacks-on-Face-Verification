@@ -5,24 +5,44 @@ from PIL import Image
 llm = LlamaService(model_name="Llama-7b")
 lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-interleave-7b", 
                                                                    "llava_qwen")
+
 img_files = [
-    Image.open("../lfw_dataset/lfw_original/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB"),
-    Image.open("../lfw_dataset/lfw_original/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB")
+    Image.open("../lfw_dataset/lfw_crop_margin_5/Adel_Al-Jubeir/Adel_Al-Jubeir_0001.jpg"),
+    Image.open("../lfw_dataset/lfw_crop_margin_5/Ziwang_Xu/Ziwang_Xu_0001.jpg")
 ]
-initial_question = "Let's start the guessing game! What is the gender of the person in this image?"
+
+initial_question = "Let's start the guessing game! Describe extremely detail the facial image"
 
 llm_system_prompt = """
-🎯 DETECTIVE CHALLENGE 🎯  
-You are the detective. Two witnesses each see one face. They don’t know the other face exists.  
-Ask ONE highly specific question about a concrete facial feature that helps eliminate or confirm identity — like in a decision tree.  
-Each question should split possibilities and guide you closer to the answer.  
-DO NOT ask if things are “same” or “similar”.  
-ONLY return the next best question to ask BOTH witnesses.
+🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
 
-Your question:
+🕵️ Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - but each witness only sees ONE image and doesn't know what the other witness sees.
+
+🎯 GAME RULES:
+- Ask questions about specific features that each witness can describe independently
+- Each witness will only describe their own image
+- Each question costs points - fewer questions = higher score!
+- Compare the two answers yourself to find similarities/differences
+- When you're confident about your conclusion, respond with "None"
+
+🔍 WINNING STRATEGY: 
+Ask about specific, identifiable features:
+- "What is the gender of the person?"
+- "What color is the person's hair?"
+- "Does the person have facial hair?"
+- "What is the approximate age?"
+- "What is the skin tone?"
+- "Are there any distinctive marks or scars?"
+
+⚠️ IMPORTANT: 
+- DON'T ask comparative questions like "Are they similar?"
+- Each witness only knows about their own image
+- Ask about ONE specific feature that both can describe independently
+
+⚡ Only return your next strategic question. Nothing else. If you have enough evidence, return "None".
+
+What's your next detective question?
 """
-
-
 
 llm_prompt_template = "History:\n{history}"
 
@@ -62,8 +82,6 @@ for round_idx in range(max_rounds):
     # Generate next question based on both answers
     next_question = llm.text_to_text(llm_system_prompt, llm_prompt_template.format(history=formatted_history))[0]
 
-    
-    
     print(f"\n🎮 Game Round {round_idx + 1}")
     print(f"🕵️ Detective Question: {question}")
     print(f"👤 Vision AI #1 (Image 1): {answer_1}")
@@ -82,13 +100,13 @@ Here's your complete investigation history:
 
 Now it's time for your final verdict! Please provide:
 
-FINAL GUESS: Are these the SAME PERSON or DIFFERENT PEOPLE?
+🎯 FINAL GUESS: Are these the SAME PERSON or DIFFERENT PEOPLE?
 
-DETECTIVE REASONING: What key evidence led to your conclusion? Explain your logical deduction process.
+🔍 DETECTIVE REASONING: What key evidence led to your conclusion? Explain your logical deduction process.
 
-CONFIDENCE LEVEL: How confident are you? (High/Medium/Low)
+📊 CONFIDENCE LEVEL: How confident are you? (High/Medium/Low)
 
-GAME SUMMARY: Briefly summarize the most important clues that solved the case.
+🎮 GAME SUMMARY: Briefly summarize the most important clues that solved the case.
 """
         final_summary = llm.text_to_text("", final_summary_prompt)[0]
         print("\n🏆 DETECTIVE'S FINAL VERDICT:")

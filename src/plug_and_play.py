@@ -8,7 +8,7 @@ lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-i
 
 img_files = [
     Image.open("../lfw_dataset/lfw_original/Adel_Al-Jubeir/Adel_Al-Jubeir_0001.jpg").convert("RGB"),
-    Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg", convert="RGB")
+    Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg").convert("RGB")
 ]
 
 initial_question = "Let's start the guessing game! Describe extremely detail the facial image"

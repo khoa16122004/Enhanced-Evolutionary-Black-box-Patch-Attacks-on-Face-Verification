@@ -6,7 +6,7 @@ llm = LlamaService(model_name="Llama-7b")
 lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-interleave-7b", 
                                                                    "llava_qwen")
 img_files = [
-    Image.open("../lfw_dataset/lfw_crop_margin_5/Abdoulaye_Wade/Abdoulaye_Wade_0001.jpg").convert("RGB"),
+    Image.open("../lfw_dataset/lfw_crop_margin_5/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB"),
     Image.open("../lfw_dataset/lfw_crop_margin_5/Zhu_Rongji/Zhu_Rongji_0001.jpg").convert("RGB")
 ]
 initial_question = "Let's start the guessing game! What is the gender of the person in this image?"

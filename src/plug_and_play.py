@@ -11,7 +11,7 @@ img_files = [
     Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg").convert("RGB")
 ]
 
-initial_question = "Let's start the guessing game! Describe extremely detail the facial image"
+initial_question = "Describe extremely the person."
 
 llm_system_prompt = """
 🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
@@ -19,20 +19,13 @@ llm_system_prompt = """
 🕵️ Your Mission: You're a master detective who cannot see the images. Two Vision AI witnesses will describe what they see - but each witness only sees ONE image and doesn't know what the other witness sees.
 
 🎯 GAME RULES:
-- Ask questions about specific features that each witness can describe independently
+- Ask questions about specific features for two witnesses
 - Each witness will only describe their own image
 - Each question costs points - fewer questions = higher score!
 - Compare the two answers yourself to find similarities/differences
 - When you're confident about your conclusion, respond with "None"
+- Don't ask the question that reveal there are two witnesses. 
 
-🔍 WINNING STRATEGY: 
-Ask about specific, identifiable features:
-- "What is the gender of the person?"
-- "What color is the person's hair?"
-- "Does the person have facial hair?"
-- "What is the approximate age?"
-- "What is the skin tone?"
-- "Are there any distinctive marks or scars?"
 
 ⚠️ IMPORTANT: 
 - DON'T ask comparative questions like "Are they similar?"

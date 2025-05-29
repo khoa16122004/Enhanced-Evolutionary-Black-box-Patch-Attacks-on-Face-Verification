@@ -62,25 +62,25 @@ for round_idx in range(max_rounds):
     question = next_question
     input("\nPress Enter for next round...")
 
-# Kết luận cuối game - tập trung vào biometrics
-final_prompt = f"""Based on facial biometric analysis:
+# # Kết luận cuối game - tập trung vào biometrics
+# final_prompt = f"""Based on facial biometric analysis:
 
-EVIDENCE:
-{chr(10).join(history)}
+# EVIDENCE:
+# {chr(10).join(history)}
 
-INSTRUCTIONS:
-1. Compare ONLY facial biometric features (eyes, nose, face shape, skin tone, etc.)
-2. Ignore clothing, background, image quality
-3. Give final verdict: SAME PERSON or DIFFERENT PEOPLE
-4. List 3 key biometric evidence points
-5. Rate confidence: HIGH/MEDIUM/LOW
+# INSTRUCTIONS:
+# 1. Compare ONLY facial biometric features (eyes, nose, face shape, skin tone, etc.)
+# 2. Ignore clothing, background, image quality
+# 3. Give final verdict: SAME PERSON or DIFFERENT PEOPLE
+# 4. List 3 key biometric evidence points
+# 5. Rate confidence: HIGH/MEDIUM/LOW
 
-VERDICT:"""
+# VERDICT:"""
 
-final_verdict = llm.text_to_text("", final_prompt)[0]
+# final_verdict = llm.text_to_text("", final_prompt)[0]
 
-print("\n" + "=" * 40)
-print("🏆 FINAL ANALYSIS")
-print("=" * 40)
-print(final_verdict)
-print(f"\n📊 Rounds completed: {len(history)}")
+# print("\n" + "=" * 40)
+# print("🏆 FINAL ANALYSIS")
+# print("=" * 40)
+# print(final_verdict)
+# print(f"\n📊 Rounds completed: {len(history)}")

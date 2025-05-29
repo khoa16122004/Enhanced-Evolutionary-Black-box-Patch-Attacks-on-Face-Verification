@@ -37,7 +37,7 @@ OBJECTIVE:
 - You will receive a history of previous questions and the witnesses’ answers.
 
 RESPONSE FORMAT:
-Only output the next best question to ask. If enough information has been gathered, output exactly: None\n
+Only output the next best question to ask. If enough information has been gathered, output exactly: "enough"\n
 """
 
 
@@ -75,7 +75,7 @@ for round_idx in range(max_rounds):
 
     print(f"🤔 Detective's Next Strategy: {next_question}")
 
-    if "none" in next_question.lower():
+    if "enough" in next_question.lower():
         should_stop = True
         break
 

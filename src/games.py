@@ -93,6 +93,8 @@ def main_with_detailed_questions(args):
     os.makedirs(output_dir, exist_ok=True)
     num_0 = 0
     num_1 = 0
+    
+    # code sao chỉ cần lấy class 0 là dừng, 100 class 1 là dừng
     with torch.no_grad():
         for i in tqdm(range(len(dataset))):    
 
@@ -105,7 +107,7 @@ def main_with_detailed_questions(args):
             index_dir = os.path.join(output_dir, str(i))
             os.makedirs(index_dir, exist_ok=True)
                 
-            final_decision, all_responses, selection_responses = game.play([img1, img2], args.num_samples)
+            game_history = game.play([img1, img2], args.num_samples)
 
 
             # 
@@ -117,7 +119,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lvlm_pretrained", type=str, default="llava-onevision-qwen2-7b-ov")
     parser.add_argument("--lvlm_model_name", type=str, default="llava_qwen")
-    parser.add_argument("--dataset", type=str, default="lfw")
+    parser.add_argument("--dataset", type=str, default="lfw_original")
     parser.add_argument("--num_samples", type=int, default=10)
     parser.add_argument("--extract_llm", type=str, default="Llama-7b")
 

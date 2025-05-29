@@ -5,9 +5,8 @@ from PIL import Image
 # Khởi tạo mô hình
 llm = LlamaService(model_name="Llama-7b")
 lvlm_model, lvlm_image_token, _ = init_lvlm_model("llava-next-interleave-7b", "llava_qwen")
-
 # Tải ảnh
-img1 = Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg").convert("RGB")
+img1 = Image.open("../lfw_dataset/lfw_original/Abdoulaye_Wade/Abdoulaye_Wade_0001.jpg").convert("RGB")
 img2 = Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg").convert("RGB")
 img1.save("test1.png")
 img2.save("test2.png")
@@ -22,7 +21,7 @@ FOCUS ONLY ON:
 - Skin tone, facial hair, distinctive marks
 - Age appearance, hair color/style
 
-ASK ONE QUESTION PER TURN. If you have enough biometric info to decide OR if nearing max rounds, return: STOP
+ASK ONE QUESTION PER TURN. If you have enough biometric info to decide, return: STOP
 
 Next question:"""
 
@@ -46,8 +45,6 @@ print(f"\n🎮 Mode: {'MANUAL' if is_manual_mode else 'AUTO'}")
 print("=" * 40)
 
 for round_idx in range(max_rounds):
-    current_round = round_idx + 1
-    
     # Hỏi cả hai witness
     full_question = f"Focus on facial features only.\nQuestion: {question}\nImage: {lvlm_image_token}"
     
@@ -56,30 +53,24 @@ for round_idx in range(max_rounds):
     answer_2 = lvlm_model.inference(full_question, [img2], num_return_sequences=1, 
                                   do_sample=True, temperature=0.7, reload=False)[0]
 
-    # Lưu lịch sử với round number
-    history.append(f"Round {current_round} - Q: {question}\nA1: {answer_1}\nA2: {answer_2}")
+    # Lưu lịch sử ngắn gọn
+    history.append(f"Q: {question}\nA1: {answer_1}\nA2: {answer_2}")
 
-    print(f"\nRound {current_round}:")
+    print(f"\nRound {round_idx + 1}:")
     print(f"❓ {question}")
     print(f"👤 Image 1: {answer_1}")
     print(f"👤 Image 2: {answer_2}")
-
-    # Kiểm tra xem đã đến round cuối chưa
-    if current_round == max_rounds:
-        print(f"\n⏰ Reached maximum rounds ({max_rounds}). Moving to final conclusion...")
-        break
 
     # Tạo context ngắn cho LLM (chỉ cho chế độ AUTO)
     if not is_manual_mode:
         context = "\n---\n".join(history)
         
-        # Hỏi câu hỏi tiếp theo với thông tin round
-        llm_prompt = f"Current round: {current_round}/{max_rounds}\nHistory:\n{context}"
-        next_question = llm.text_to_text(llm_system_prompt, llm_prompt)[0].strip()
+        # Hỏi câu hỏi tiếp theo
+        next_question = llm.text_to_text(llm_system_prompt, f"History:\n{context}")[0].strip()
     
     if is_manual_mode:
         # Chế độ thủ công - người chơi nhập câu hỏi
-        print(f"\n🎯 Round {current_round}/{max_rounds} - Your turn to ask a question!")
+        print("\n🎯 Your turn to ask a question!")
         print("Focus on facial biometrics: eyes, nose, face shape, skin tone, hair, etc.")
         print("Type 'STOP' when you have enough information to make a decision.")
         
@@ -98,37 +89,3 @@ for round_idx in range(max_rounds):
 
         question = next_question
         input("\nPress Enter for next round...")
-
-# Kết luận cuối game - tập trung vào biometrics
-if is_manual_mode:
-    print("\n🎯 Time for your final decision!")
-    print("Based on the evidence you've gathered:")
-    final_decision = input("Your verdict (SAME/DIFFERENT): ").strip()
-    reasoning = input("Your reasoning (key biometric evidence): ").strip()
-    confidence = input("Your confidence (HIGH/MEDIUM/LOW): ").strip()
-    
-    print("\n" + "=" * 40)
-    print("🏆 YOUR FINAL ANALYSIS")
-    print("=" * 40)
-    print(f"VERDICT: {final_decision}")
-    print(f"REASONING: {reasoning}")
-    print(f"CONFIDENCE: {confidence}")
-else:
-    final_prompt = f"""You are a detective completing a face verification investigation. 
-
-Your complete investigation record:
-{chr(10).join(history)}
-
-Now summarize your findings and give ONE clear final answer: Are these the SAME PERSON or DIFFERENT PEOPLE?
-
-Base your conclusion on the facial biometric evidence only. Be consistent with the evidence you've gathered.
-
-Final verdict:"""
-
-    final_verdict = llm.text_to_text("", final_prompt)[0]
-
-    print("\n" + "=" * 40)
-    print("🏆 DETECTIVE'S FINAL VERDICT")
-    print("=" * 40)
-    print(final_verdict)
-print(f"\n📊 Rounds completed: {len(history)}")

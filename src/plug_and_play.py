@@ -22,7 +22,7 @@ In each turn, you must ask a question to both witnesses to extract information l
 Your goal is to ask questions that help you determine whether the two images are of the same person.
 You will receive a history log of Q&A. Based on this, ask the next best question.
 If you have enough information, return 'None'.
-Answer must be in {{}}
+Your response just include only the question you want to ask.
 """
 
 llm_prompt_template = "History:\n{history}"

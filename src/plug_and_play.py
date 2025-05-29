@@ -33,12 +33,11 @@ RULES:
 - Ask general questions that both witnesses can answer **independently** based on their image.
 
 OBJECTIVE:
-- Your goal is to collect enough information to determine whether the two images are of the **same person** or **different people**.
-- After reviewing the Q&A history, if you believe you have enough information, return `None`.
+- Your goal is to ask as few strategic questions as possible in order to determine whether the two images show the **same person** or **different people**.
+- You will receive a history of previous questions and the witnesses’ answers.
 
 RESPONSE FORMAT:
-Only output the next best question to ask. If enough information has been gathered, output exactly:
-None
+Only output the next best question to ask. If enough information has been gathered, output exactly: None\n
 """
 
 

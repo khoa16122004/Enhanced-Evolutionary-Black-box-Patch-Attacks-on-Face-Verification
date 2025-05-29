@@ -2,42 +2,27 @@ from text_to_text_services import LlamaService
 from get_architech import init_lvlm_model
 from PIL import Image
 
+# Khởi tạo mô hình
 llm = LlamaService(model_name="Llama-7b")
-lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-interleave-7b", 
-                                                                   "llava_qwen")
+lvlm_model, lvlm_image_token, _ = init_lvlm_model("llava-next-interleave-7b", "llava_qwen")
 
-img_files = [
-    Image.open("../lfw_dataset/lfw_original/Adel_Al-Jubeir/Adel_Al-Jubeir_0001.jpg").convert("RGB"),
-    Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg").convert("RGB")
-]
+# Tải ảnh
+img1 = Image.open("../lfw_dataset/lfw_original/Adel_Al-Jubeir/Adel_Al-Jubeir_0001.jpg").convert("RGB")
+img2 = Image.open("../lfw_dataset/lfw_original/Ziwang_Xu/Ziwang_Xu_0001.jpg").convert("RGB")
+img1.save("test1.png")
+img2.save("test2.png")
 
-img_files[0].save("test1.png")
-img_files[1].save("test2.png")
-
+# Thiết lập trò chơi
 initial_question = "Describe the person in the image."
-
 llm_system_prompt = """
-🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
-
-🕵️ Your Mission: You're a master detective who cannot see the images. Two witnesses each have one different image, and you'll ask them the same question. They don't know what the other person's image looks like.
-
-🎯 GAME RULES:
-- Ask ONE question that will be given to both witnesses
-- Each witness will describe only their own image using the same question
-- Each question costs points - fewer questions = higher score!
-- Compare the two answers yourself to find similarities/differences
-- When you're confident about your conclusion, respond with "None"
-- Frame questions so they work for any single image
-
-⚠️ IMPORTANT: 
-- Write questions like "Describe the [feature]" or "What is the [aspect]?"
-- DON'T ask comparative questions since each person only sees one image
-- Your question will be asked to two different people with two different images
-- Make questions specific enough to get detailed, comparable answers
-
-⚡ Only return your next strategic question. Nothing else. If you have enough evidence, return "None".
-
-What's your next detective question?
+You will join a game with the rule similar to the 20 questions game. 
+There are two witnesses, each holding an image of a person. They don't know each other's image. 
+They can only describe or answer questions about their own image.
+In each turn, you must ask a question to both witnesses to extract information like biometric features, age, etc.
+Your goal is to ask questions that help you determine whether the two images are of the same person.
+You will receive a history log of Q&A. Based on this, ask the next best question.
+If you have enough information, return 'None'.
+Answer must be in {{}}
 """
 
 llm_prompt_template = "History:\n{history}"
@@ -45,50 +30,44 @@ llm_prompt_template = "History:\n{history}"
 history = []
 question = initial_question
 max_rounds = 10
+should_stop = False
 
 for round_idx in range(max_rounds):
-    # Ask the question to the first image
-    answer_1 = lvlm_model.inference(
-        question + lvlm_image_token,
-        [img_files[0]],  # Pass as list for consistency
-        num_return_sequences=1,
-        do_sample=True,
-        temperature=0.8,
-        reload=False
-    )[0]
-    
-    # Ask the same question to the second image  
-    answer_2 = lvlm_model.inference(
-        question + lvlm_image_token,
-        [img_files[1]],  # Pass as list for consistency
-        num_return_sequences=1,
-        do_sample=True,
-        temperature=0.8,
-        reload=False
-    )[0]
+    # Hỏi từng nhân chứng
+    answer_1 = lvlm_model.inference(question + lvlm_image_token, [img1], num_return_sequences=1, do_sample=True, temperature=0.8, reload=False)[0]
+    answer_2 = lvlm_model.inference(question + lvlm_image_token, [img2], num_return_sequences=1, do_sample=True, temperature=0.8, reload=False)[0]
 
-    # Store both answers in history
+    # Cập nhật lịch sử
     history.append((question, answer_1, answer_2))
 
-    # Format history for LLM - include both answers for comparison
-    formatted_history = ""
-    for q, a1, a2 in history:
-        formatted_history += f"Q: {q}\nWitness 1: {a1}\nWitness 2: {a2}\n\n"
-
-    # Generate next question based on both answers
-    next_question = llm.text_to_text(llm_system_prompt, llm_prompt_template.format(history=formatted_history))[0]
-
+    # Hiển thị
     print(f"\n🎮 Game Round {round_idx + 1}")
     print(f"🕵️ Detective Question: {question}")
     print(f"👤 Witness #1: {answer_1}")
     print(f"👤 Witness #2: {answer_2}")
+
+    # Định dạng lại lịch sử
+    formatted_history = "\n".join(
+        f"Q: {q}\nWitness 1: {a1}\nWitness 2: {a2}" for q, a1, a2 in history
+    )
+
+    # Dự đoán câu hỏi tiếp theo
+    next_question = llm.text_to_text(
+        llm_system_prompt,
+        llm_prompt_template.format(history=formatted_history)
+    )[0]
+
     print(f"🤔 Detective's Next Strategy: {next_question}")
 
-    if "None" in next_question or "none" in next_question.lower():
-        print("\n🎯 GAME OVER! Detective has reached a conclusion!")
-        
-        # Final summary with all Q&A pairs
-        final_summary_prompt = f"""
+    if "none" in next_question.lower():
+        should_stop = True
+        break
+
+    question = next_question
+    input("Press Enter to continue to the next round...")
+
+# Tổng kết khi kết thúc vòng lặp hoặc nhận được "None"
+final_summary_prompt = f"""
 The investigation is complete! You've been asking questions to two witnesses, each holding a different image.
 
 Here's your complete investigation history:
@@ -104,14 +83,10 @@ Now provide your final verdict:
 
 🎮 GAME SUMMARY: Briefly summarize the most important clues that solved the case.
 """
-        final_summary = llm.text_to_text("", final_summary_prompt)[0]
-        print("\n🏆 DETECTIVE'S FINAL VERDICT:")
-        print(final_summary)
-        break
 
-    question = next_question
-    input("Press Enter to continue to the next round...")
+final_summary = llm.text_to_text("", final_summary_prompt)[0]
 
-print("\n🎮 GAME COMPLETED!")
+print("\n🏁 GAME OVER!")
 print(f"🔢 Total Investigation Rounds: {len(history)}")
-print(f"🕵️ Questions Asked: {[q for q, _, _ in history]}")
+print("\n🏆 DETECTIVE'S FINAL VERDICT:")
+print(final_summary)

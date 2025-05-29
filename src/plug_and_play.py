@@ -26,10 +26,11 @@ SETUP:
 - They do not see each other’s image and cannot guess or infer about the other image.
 
 RULES:
-- In each turn, you must ask **a single question** to both witnesses.
-- The question should help you extract distinguishing details (e.g., facial features, age, gender, accessories).
-- Do **not** ask person-specific comparisons (e.g., “Does person 1 have X and person 2 not?”).
-- Ask general questions that both witnesses can answer independently.
+- In each turn, you must ask **one strategic question** that is answered separately by both witnesses.
+- Your questions should aim to **maximize useful information** and efficiently narrow down whether the two images depict the same person.
+- Focus on **discriminative attributes** such as facial features, age, gender, hairstyle, skin tone, glasses, beard, etc.
+- Do **not** ask direct comparisons (e.g., "Does person 1 have something that person 2 does not?").
+- Ask general questions that both witnesses can answer **independently** based on their image.
 
 OBJECTIVE:
 - Your goal is to collect enough information to determine whether the two images are of the **same person** or **different people**.
@@ -64,7 +65,7 @@ for round_idx in range(max_rounds):
 
     # Định dạng lại lịch sử
     formatted_history = "\n".join(
-        f"Q: {q}\nWitness 1: {a1}\nWitness 2: {a2}" for q, a1, a2 in history
+        f"Round {i + 1}: Q={q} - Witness 1={a1} - Witness 2={a2}" for i, (q, a1, a2) in enumerate(history)
     )
 
     # Dự đoán câu hỏi tiếp theo

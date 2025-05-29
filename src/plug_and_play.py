@@ -17,10 +17,24 @@ llm_system_prompt = """You are analyzing facial features to verify if two people
 
 TASK: Ask strategic questions about facial biometrics to determine if two images show the same person.
 
+FOCUS ONLY ON:
+- Face shape, eye shape/color, nose structure
+- Skin tone, facial hair, distinctive marks
+- Age appearance, hair color/style
 
 ASK ONE QUESTION PER TURN. If you have enough biometric info to decide, return: STOP
 
 Next question:"""
+
+# Chọn chế độ chơi
+print("🔍 FACE VERIFICATION GAME")
+print("=" * 40)
+print("Choose game mode:")
+print("1. AUTO - LLM asks questions automatically")
+print("2. MANUAL - You ask questions manually")
+
+mode = input("Enter mode (1 or 2): ").strip()
+is_manual_mode = mode == "2"
 
 # Thiết lập ban đầu
 initial_question = "Describe the person's facial features in detail."
@@ -28,7 +42,7 @@ history = []
 question = initial_question
 max_rounds = 4
 
-print("🔍 FACE VERIFICATION GAME")
+print(f"\n🎮 Mode: {'MANUAL' if is_manual_mode else 'AUTO'}")
 print("=" * 40)
 
 for round_idx in range(max_rounds):
@@ -48,39 +62,63 @@ for round_idx in range(max_rounds):
     print(f"👤 Image 1: {answer_1}")
     print(f"👤 Image 2: {answer_2}")
 
-    # Tạo context ngắn cho LLM
-    context = "\n---\n".join(history)
+    # Tạo context ngắn cho LLM (chỉ cho chế độ AUTO)
+    if not is_manual_mode:
+        context = "\n---\n".join(history)
+        
+        # Hỏi câu hỏi tiếp theo
+        next_question = llm.text_to_text(llm_system_prompt, f"History:\n{context}")[0].strip()
     
-    # Hỏi câu hỏi tiếp theo
-    next_question = llm.text_to_text(llm_system_prompt, f"History:\n{context}")[0].strip()
+    if is_manual_mode:
+        # Chế độ thủ công - người chơi nhập câu hỏi
+        print("\n🎯 Your turn to ask a question!")
+        print("Focus on facial biometrics: eyes, nose, face shape, skin tone, hair, etc.")
+        print("Type 'STOP' when you have enough information to make a decision.")
+        
+        next_question = input("Your question: ").strip()
+        
+        if next_question.upper() == "STOP":
+            break
+            
+        question = next_question
+    else:
+        # Chế độ tự động - LLM tự hỏi
+        print(f"🤔 Next: {next_question}")
+
+        if "STOP" in next_question.upper():
+            break
+
+        question = next_question
+        input("\nPress Enter for next round...")
+
+# Kết luận cuối game - tập trung vào biometrics
+if is_manual_mode:
+    print("\n🎯 Time for your final decision!")
+    print("Based on the evidence you've gathered:")
+    final_decision = input("Your verdict (SAME/DIFFERENT): ").strip()
+    reasoning = input("Your reasoning (key biometric evidence): ").strip()
+    confidence = input("Your confidence (HIGH/MEDIUM/LOW): ").strip()
     
-    print(f"🤔 Next: {next_question}")
+    print("\n" + "=" * 40)
+    print("🏆 YOUR FINAL ANALYSIS")
+    print("=" * 40)
+    print(f"VERDICT: {final_decision}")
+    print(f"REASONING: {reasoning}")
+    print(f"CONFIDENCE: {confidence}")
+else:
+    final_prompt = f"""You are a detective in a face verification game. You've been questioning two witnesses about the people in their images to determine if they show the same person or different people.
 
-    if "STOP" in next_question.upper():
-        break
+Your investigation evidence:
+{chr(10).join(history)}
 
-    question = next_question
-    input("\nPress Enter for next round...")
+Based on your detective work, provide your final conclusion about whether these two images show the same person or different people. Focus on the facial biometric evidence you've gathered.
 
-# # Kết luận cuối game - tập trung vào biometrics
-# final_prompt = f"""Based on facial biometric analysis:
+Your verdict:"""
 
-# EVIDENCE:
-# {chr(10).join(history)}
+    final_verdict = llm.text_to_text("", final_prompt)[0]
 
-# INSTRUCTIONS:
-# 1. Compare ONLY facial biometric features (eyes, nose, face shape, skin tone, etc.)
-# 2. Ignore clothing, background, image quality
-# 3. Give final verdict: SAME PERSON or DIFFERENT PEOPLE
-# 4. List 3 key biometric evidence points
-# 5. Rate confidence: HIGH/MEDIUM/LOW
-
-# VERDICT:"""
-
-# final_verdict = llm.text_to_text("", final_prompt)[0]
-
-# print("\n" + "=" * 40)
-# print("🏆 FINAL ANALYSIS")
-# print("=" * 40)
-# print(final_verdict)
-# print(f"\n📊 Rounds completed: {len(history)}")
+    print("\n" + "=" * 40)
+    print("🏆 DETECTIVE'S FINAL VERDICT")
+    print("=" * 40)
+    print(final_verdict)
+print(f"\n📊 Rounds completed: {len(history)}")

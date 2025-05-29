@@ -22,7 +22,7 @@ FOCUS ONLY ON:
 - Skin tone, facial hair, distinctive marks
 - Age appearance, hair color/style
 
-ASK ONE QUESTION PER TURN. If you have enough biometric info to decide, return: STOP
+ASK ONE QUESTION PER TURN. If you have enough biometric info to decide OR if nearing max rounds, return: STOP
 
 Next question:"""
 
@@ -46,6 +46,8 @@ print(f"\n🎮 Mode: {'MANUAL' if is_manual_mode else 'AUTO'}")
 print("=" * 40)
 
 for round_idx in range(max_rounds):
+    current_round = round_idx + 1
+    
     # Hỏi cả hai witness
     full_question = f"Focus on facial features only.\nQuestion: {question}\nImage: {lvlm_image_token}"
     
@@ -54,24 +56,30 @@ for round_idx in range(max_rounds):
     answer_2 = lvlm_model.inference(full_question, [img2], num_return_sequences=1, 
                                   do_sample=True, temperature=0.7, reload=False)[0]
 
-    # Lưu lịch sử ngắn gọn
-    history.append(f"Q: {question}\nA1: {answer_1}\nA2: {answer_2}")
+    # Lưu lịch sử với round number
+    history.append(f"Round {current_round} - Q: {question}\nA1: {answer_1}\nA2: {answer_2}")
 
-    print(f"\nRound {round_idx + 1}:")
+    print(f"\nRound {current_round}:")
     print(f"❓ {question}")
     print(f"👤 Image 1: {answer_1}")
     print(f"👤 Image 2: {answer_2}")
+
+    # Kiểm tra xem đã đến round cuối chưa
+    if current_round == max_rounds:
+        print(f"\n⏰ Reached maximum rounds ({max_rounds}). Moving to final conclusion...")
+        break
 
     # Tạo context ngắn cho LLM (chỉ cho chế độ AUTO)
     if not is_manual_mode:
         context = "\n---\n".join(history)
         
-        # Hỏi câu hỏi tiếp theo
-        next_question = llm.text_to_text(llm_system_prompt, f"History:\n{context}")[0].strip()
+        # Hỏi câu hỏi tiếp theo với thông tin round
+        llm_prompt = f"Current round: {current_round}/{max_rounds}\nHistory:\n{context}"
+        next_question = llm.text_to_text(llm_system_prompt, llm_prompt)[0].strip()
     
     if is_manual_mode:
         # Chế độ thủ công - người chơi nhập câu hỏi
-        print("\n🎯 Your turn to ask a question!")
+        print(f"\n🎯 Round {current_round}/{max_rounds} - Your turn to ask a question!")
         print("Focus on facial biometrics: eyes, nose, face shape, skin tone, hair, etc.")
         print("Type 'STOP' when you have enough information to make a decision.")
         

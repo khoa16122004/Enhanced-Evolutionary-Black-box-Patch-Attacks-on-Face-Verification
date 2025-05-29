@@ -15,15 +15,31 @@ img2.save("test2.png")
 # Thiết lập trò chơi
 initial_question = "Describe the person in the image."
 llm_system_prompt = """
-You will join a game with the rule similar to the 20 questions game. 
-There are two witnesses, each holding an image of a person. They don't know each other's image. 
-They can only describe or answer questions about their own image.
-In each turn, you must ask a question to both witnesses to extract information like biometric features, age, etc.
-Your goal is to ask questions that help you determine whether the two images are of the same person.
-You will receive a history log of Q&A. Based on this, ask the next best question.
-If you have enough information, return 'None'.
-Your response just include only the question you want to ask.
+🎯 GAME INSTRUCTIONS
+
+ROLE:
+You are a detective playing a question-answer game inspired by "20 Questions".
+
+SETUP:
+- Two witnesses are each given one image of a person.
+- Each witness can only describe the person in their own image.
+- They do not see each other’s image and cannot guess or infer about the other image.
+
+RULES:
+- In each turn, you must ask **a single question** to both witnesses.
+- The question should help you extract distinguishing details (e.g., facial features, age, gender, accessories).
+- Do **not** ask person-specific comparisons (e.g., “Does person 1 have X and person 2 not?”).
+- Ask general questions that both witnesses can answer independently.
+
+OBJECTIVE:
+- Your goal is to collect enough information to determine whether the two images are of the **same person** or **different people**.
+- After reviewing the Q&A history, if you believe you have enough information, return `None`.
+
+RESPONSE FORMAT:
+Only output the next best question to ask. If enough information has been gathered, output exactly:
+None
 """
+
 
 llm_prompt_template = "History:\n{history}"
 

@@ -35,9 +35,10 @@ RULES:
 OBJECTIVE:
 - Your goal is to ask as few strategic questions as possible in order to determine whether the two images show the **same person** or **different people**.
 - You will receive a history of previous questions and the witnesses’ answers.
+- If, based on this history, you believe you have gathered **enough information to make a decision**, return exactly: `None`.
 
 RESPONSE FORMAT:
-Only output the next best question to ask. If enough information has been gathered, output exactly: "enough"\n
+Only output the next best question to ask. If enough information has been gathered, output exactly: None\n
 """
 
 
@@ -45,7 +46,7 @@ llm_prompt_template = "History:\n{history}"
 
 history = []
 question = initial_question
-max_rounds = 10
+max_rounds = 5
 should_stop = False
 
 for round_idx in range(max_rounds):
@@ -75,7 +76,7 @@ for round_idx in range(max_rounds):
 
     print(f"🤔 Detective's Next Strategy: {next_question}")
 
-    if "enough" in next_question.lower():
+    if "none" in next_question.lower():
         should_stop = True
         break
 

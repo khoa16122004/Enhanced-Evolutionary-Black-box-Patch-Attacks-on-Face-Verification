@@ -106,14 +106,16 @@ if is_manual_mode:
     print(f"REASONING: {reasoning}")
     print(f"CONFIDENCE: {confidence}")
 else:
-    final_prompt = f"""You are a detective in a face verification game. You've been questioning two witnesses about the people in their images to determine if they show the same person or different people.
+    final_prompt = f"""You are a detective completing a face verification investigation. 
 
-Your investigation evidence:
+Your complete investigation record:
 {chr(10).join(history)}
 
-Based on your detective work, provide your final conclusion about whether these two images show the same person or different people. Focus on the facial biometric evidence you've gathered.
+Now summarize your findings and give ONE clear final answer: Are these the SAME PERSON or DIFFERENT PEOPLE?
 
-Your verdict:"""
+Base your conclusion on the facial biometric evidence only. Be consistent with the evidence you've gathered.
+
+Final verdict:"""
 
     final_verdict = llm.text_to_text("", final_prompt)[0]
 

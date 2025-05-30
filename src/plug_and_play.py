@@ -38,11 +38,12 @@ llm_prompt_template = "History:\n{history}"
 
 # ==== Gameplay ====
 history = []
+system_vlm_prompt = "Just answer the question, don't provide any information about the images.\n"
 question = initial_question
 
 for round_idx in range(max_rounds):
     answer_1 = lvlm_model.inference(
-        question + lvlm_image_token,
+        system_vlm_prompt + question + lvlm_image_token,
         [img_files[0]],
         num_return_sequences=1,
         do_sample=True,
@@ -51,7 +52,7 @@ for round_idx in range(max_rounds):
     )[0]
 
     answer_2 = lvlm_model.inference(
-        question + lvlm_image_token,
+        system_vlm_prompt + question + lvlm_image_token,
         [img_files[1]],
         num_return_sequences=1,
         do_sample=True,

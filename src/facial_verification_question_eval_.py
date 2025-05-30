@@ -88,8 +88,8 @@ def main_with_detailed_questions(args):
     else:
         llm = LlamaService(model_name="Llama-7b")
     
-    game = Games(lvlm_model, lvlm_image_token, llmm, args.max_round)
-    output_dir = f"games_pretrained={args.lvlm_pretrained}_modelname={args.lvlm_model_name}_dataset={args.dataset}_num_samples={args.num_samples}_llm={args.extract_llm}"
+    agent = AgentWithDetailedQuestions(lvlm_model, lvlm_image_token, llm)
+    output_dir = f"question_pretrained={args.lvlm_pretrained}_modelname={args.lvlm_model_name}_dataset={args.dataset}_num_samples={args.num_samples}_llm={args.extract_llm}"
     os.makedirs(output_dir, exist_ok=True)
     num_0 = 0
     num_1 = 0
@@ -105,10 +105,22 @@ def main_with_detailed_questions(args):
             index_dir = os.path.join(output_dir, str(i))
             os.makedirs(index_dir, exist_ok=True)
                 
-            final_decision, all_responses, selection_responses = game.play([img1, img2], args.num_samples)
+            final_decision, all_responses, selection_responses = agent.eval([img1, img2], args.num_samples)
 
 
-            # 
+            with open(os.path.join(index_dir, "decide.txt"), "w") as f:
+                f.write(f"{final_decision}\n")
+            for j, response in enumerate(selection_responses):
+                with open(os.path.join(index_dir, f"selection_{j}.txt"), "w") as f:  
+                    f.write(f"{response}")
+            for j, question in enumerate(all_responses):
+                question_dir = os.path.join(index_dir, f"question_{j}")
+                os.makedirs(question_dir, exist_ok=True)
+                
+                for k, response in enumerate(all_responses[j]):
+                    response_path = os.path.join(question_dir, f"response_{k}.txt")
+                    with open(response_path, "w") as f:
+                        f.write(f"{response}\n")
 
 
 

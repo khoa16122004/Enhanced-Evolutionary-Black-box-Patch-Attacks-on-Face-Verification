@@ -7,7 +7,7 @@ mode = "llm"  # Choose: "llm" or "manual"
 llm = LlamaService(model_name="Llama-7b")
 lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-interleave-7b", "llava_qwen")
 max_rounds = 10
-initial_question = "Describe the person in the image."
+initial_question = "What is the gender of the person.."
 img_files = [
     Image.open("../lfw_dataset/lfw_original/Zarai_Toledo/Zarai_Toledo_0001.jpg").convert("RGB"),
     Image.open("../lfw_dataset/lfw_original/Zarai_Toledo/Zarai_Toledo_0002.jpg").convert("RGB")

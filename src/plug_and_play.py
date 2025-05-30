@@ -41,7 +41,7 @@ llm_prompt_template = "History:\n{history}"
 
 # ==== Gameplay ====
 history = []
-system_vlm_prompt = "Just answer the question in the short ways, don't provide any information about the images.\n"
+system_vlm_prompt = "Just answer yes or no.\n"
 question = initial_question
 
 for round_idx in range(max_rounds):

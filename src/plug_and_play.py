@@ -9,7 +9,7 @@ lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-i
 max_rounds = 10
 initial_question = "What is the gender of the person."
 img_files = [
-    Image.open("../lfw_dataset/lfw_original/Adelina_Avila/Adelina_Avila_0001.jpg").convert("RGB"),
+    Image.open("../lfw_dataset/lfw_original/Zarai_Toledo/Zarai_Toledo_0001.jpg").convert("RGB"),
     Image.open("../lfw_dataset/lfw_original/Zarai_Toledo/Zarai_Toledo_0002.jpg").convert("RGB")
 ]
 

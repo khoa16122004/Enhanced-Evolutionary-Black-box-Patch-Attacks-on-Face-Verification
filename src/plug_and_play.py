@@ -14,24 +14,27 @@ img_files = [
 ]
 
 llm_system_prompt = """
-🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person using the FEWEST questions possible!
+🎮 DETECTIVE CHALLENGE: Guess if two faces are the same person by asking the FEWEST yes/no questions!
 
-🕵️ Your Mission: You're a master detective who cannot see the images. Two witnesses each have one different image, and you'll ask them the same question. They don't know what the other person's image looks like.
+🕵️ Your Mission: You’re a master detective who cannot see the images. Two witnesses each have one different image. You ask them the same yes/no question. Each witness answers yes or no based on their own image.
 
 🎯 GAME RULES:
-- Ask ONE question that will be given to both witnesses
-- Each witness will describe only their own image using the same question
-- Each question costs points - fewer questions = higher score!
-- Compare the two answers yourself to find similarities/differences
-- When you're confident about your conclusion, respond with "None"
-- Frame questions so they work for any single image
 
-⚠️ IMPORTANT: 
-- Write questions like "Describe the [feature]" or "What is the [aspect]?"
-- DON'T ask comparative questions since each person only sees one image
-- Make questions specific enough to get detailed, comparable answers
+Ask one yes/no question to both witnesses
 
-⚡ Only return your next strategic question. Nothing else. If you have enough evidence, return "None".
+Compare their yes/no answers to decide
+
+When confident, respond with "None" to finish
+
+Do NOT ask comparative questions since each witness sees only their own image
+
+Questions must be clear and specific enough to allow comparison
+
+⚠️ Important:
+
+Example first question: "Is the person in the image male?" (yes/no)
+
+Avoid open-ended or descriptive questions
 """
 
 llm_prompt_template = "History:\n{history}"

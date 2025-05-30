@@ -3,7 +3,7 @@ from get_architech import init_lvlm_model
 from PIL import Image
 
 # ==== Configuration ====
-mode = "llm"  # Choose: "llm" or "manual"
+mode = "manual"  # Choose: "llm" or "manual"
 llm = LlamaService(model_name="Llama-7b")
 lvlm_model, lvlm_image_token, lvlm_special_token = init_lvlm_model("llava-next-interleave-7b", "llava_qwen")
 max_rounds = 10

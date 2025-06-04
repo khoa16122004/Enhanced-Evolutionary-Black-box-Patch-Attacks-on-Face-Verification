@@ -70,3 +70,24 @@ class LlamaService:
             return [o.split("Answer:")[-1].strip() for o in decoded_outptus]
         else:
             return decoded_outptus.split("Answer:")[-1].strip()
+
+    def chat(self, chat_history, new_user_input):
+        """
+        chat_history: List of tuples [(user_input_1, assistant_output_1), ..., (user_input_n, assistant_output_n)]
+        new_user_input: str
+        """
+        conversation = ""
+        for user, assistant in chat_history:
+            conversation += f"[INST] {user} [/INST] {assistant} "
+        conversation += f"[INST] {new_user_input} [/INST]"
+
+        input_ids = self.tokenizer(conversation, 
+                                return_tensors="pt", 
+                                padding=True, truncation=True)
+        outputs = self.model.generate(input_ids=input_ids.input_ids.to(self.model.device), 
+                                    attention_mask=input_ids.attention_mask.to(self.model.device), 
+                                    **self.generate_kwargs)
+        decoded_output = self.tokenizer.batch_decode(outputs.sequences, skip_special_tokens=True)[0]
+        
+        answer = decoded_output.split("[/INST]")[-1].strip()
+        return answer
